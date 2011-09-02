@@ -3,7 +3,8 @@
 								  xmlns:s="library://ns.adobe.com/flex/spark"
 								  xmlns:dribble="services.dribbbleService.*"
 								  xmlns:dribbbleservice="services.dribbbleservice.*"
-								  creationComplete="creationCompleteHandler(event)">
+								  creationComplete="creationCompleteHandler(event)"
+								  >
 	
 	<fx:Style source="styles/DribbbleMobileClient.css"/>
 	
@@ -25,8 +26,8 @@
 	
 	
 	
-	<s:ViewNavigator label="home" width="100%" height="100%" firstView="views.HomeView"/>
+	<!--<s:ViewNavigator label="home" width="100%" height="100%" firstView="views.HomeView"/>-->
 	<s:ViewNavigator label="popular" width="100%" height="100%" firstView="views.PopularView"/>
-	<s:ViewNavigator label="players" width="100%" height="100%" firstView="views.PlayerView"/>
+	<!--<s:ViewNavigator label="players" width="100%" height="100%" firstView="views.PlayerView"/>-->
 	
 </s:TabbedViewNavigatorApplication>

@@ -2,7 +2,8 @@
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="closeup"
 		viewActivate="viewActivateHandler()"
-		viewDeactivate="viewDeactivateHandler(event)">
+		viewDeactivate="viewDeactivateHandler(event)"
+		tabBarVisible="false">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -46,6 +47,10 @@
 				meter.removeEventListener(AccelerometerEvent.UPDATE,movementDetected);				
 			}
 			
+			private function onPlayerClick(event:Event):void{
+				trace("player clicked");
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -75,23 +80,28 @@
 	
 	<s:VGroup>
 		<s:HGroup verticalAlign.portrait="middle">
-			<s:Image source="@Embed(source='assets/icons/PlayerIconGrey30x30.png')" />
-			<s:Label text="{data.userName}" verticalAlign="bottom"
+			<s:Image id="playerImage" source="@Embed(source='assets/icons/PlayerIconGrey50x50.png')"
+					 y.portrait="-13" width.portrait="50" height.portrait="50"
+					 click="navigator.pushView(views.PlayerView, data.player)"/>
+			<s:Label text="{data.player.username}" verticalAlign="bottom"
 					 fontSize="20"/>
 		</s:HGroup>
 		
 		<s:HGroup verticalAlign.portrait="middle">
-			<s:Image source="@Embed(source='assets/icons/ViewsIconGrey30x30.png')" />
-			<s:Label text="{data.viewCount}" verticalAlign="bottom"
+			<s:Image source="@Embed(source='assets/icons/ViewsIconGrey50x50.png')"
+					 y.portrait="-9" width.portrait="50" height.portrait="50"/>
+			<s:Label text="{data.viewsCount}" verticalAlign="bottom"
 					 fontSize="20"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign.portrait="middle">
-			<s:Image source="@Embed(source='assets/icons/LikesIconGrey30x30.png')" />
+			<s:Image source="@Embed(source='assets/icons/LikesIconGrey50x50.png')"
+					 y.portrait="-8" width.portrait="50" height.portrait="50"/>
 			<s:Label text="{data.likesCount}"
 					 fontSize="20"/>
 		</s:HGroup>
 		<s:HGroup fontSize="20" verticalAlign="middle">
-			<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon30x30.png')" />
+			<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon50x50.png')"
+					 y.portrait="-9" width.portrait="50" height.portrait="50"/>
 			<s:Label text="{data.commentsCount}"/>
 		</s:HGroup>
 		

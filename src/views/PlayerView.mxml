@@ -1,12 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="player shots">
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:playershots="services.playershots.*"
+		tabBarVisible="false" title="player shots"
+		viewActivate="init()">
+	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:HTTPService id="service" url="{_url}"
+					   result="serviceResultHandler(event)"/>
 	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.serialization.json.JSON;
+			
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			//first step: display player's work as tiles
+			//avatar
+			//recent work
+			//show as tiles
+			//section of screen		
+			
+			[Bindable]
+			private var _url:String;
+			[Bindable]
+			private var _shotVOs:ArrayCollection = new ArrayCollection();
+			
+			private function init():void{
+				_url = "http://api.dribbble.com/players/"+data.id+"/shots";
+				service.send();
+			}
+			
+			private function serviceResultHandler(event:ResultEvent):void{
+				trace(event.result);
+				_shotVOs.removeAll();
+				var obj:Object = JSON.decode(event.result.lastResult);
+				var shots:Array = obj.shots as Array;
+				
+			}
+			
+		]]>
+	</fx:Script>
 	
 	<s:navigationContent>
 		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
 	</s:navigationContent>
+	
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle" horizontalAlign="center"/>
+	</s:layout>
+	<s:Label text="{data.username}"/>
+	
+		<s:TileGroup horizontalGap="1" verticalGap="1">
+			<s:Button label="1" width="50" height="50" />
+			<s:Button label="2" width="50" height="50" />
+			<s:Button label="3" width="50" height="50" />
+			<s:Button label="4" width="50" height="50" />
+			<s:Button label="5" width="50" height="50" />
+			<s:Button label="6" width="50" height="50" />
+			<s:Button label="7" width="50" height="50" />
+			<s:Button label="8" width="50" height="50" />
+			<s:Button label="9" width="50" height="50" />             
+		</s:TileGroup>
+
+
 	
 </s:View>

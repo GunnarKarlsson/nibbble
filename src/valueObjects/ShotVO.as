@@ -7,16 +7,21 @@ package valueObjects
 
 	[Bindable]
 	public class ShotVO
-	{
+	{		
+		public var id:int;
 		public var title:String;
-		public var _imageTeaserUrl:String;
-		public var _imageUrl:String;
-		public var userName:String;
+		public var shortUrl:String;
+		private var _imageTeaserUrl:String;
+		private var _imageUrl:String;
+		public var width:int;
+		public var height:int;
+		public var viewsCount:int;
 		public var likesCount:int;
-		public var viewCount:int;
 		public var commentsCount:int;
-		public var playerId:int;
-		public var shotId:int;
+		public var reboundsCount:int;
+		public var reboundsSourceId:int;
+		public var createdAt:String;
+		public var player:PlayerVO;
 		
 		public var teaserImage:Bitmap;
 		public var image:Bitmap;

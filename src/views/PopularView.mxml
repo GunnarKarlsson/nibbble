@@ -4,7 +4,8 @@
 		xmlns:dribbleservice2="services.dribbleservice2.*"
 		title="popular"
 		viewActivate="getEveryoneList()"
-		destructionPolicy="never">
+		destructionPolicy="never"
+		tabBarVisible="false">
 	
 	<fx:Declarations>
 		<s:CallResponder id="DribbleService2Result" result="parseResult()"/>
@@ -25,10 +26,10 @@
 			import com.adobe.serialization.json.JSON;
 			
 			import mx.collections.ArrayCollection;
-			import mx.events.IndexChangedEvent;
 			
 			import spark.events.IndexChangeEvent;
 			
+			import valueObjects.PlayerVO;
 			import valueObjects.ShotVO;
 			
 			[Bindable]
@@ -39,28 +40,56 @@
 			}
 			
 			private function getEveryoneList():void{
-				DribbleService2Result.token = dribbleService2.DribbleService2(25);
+				DribbleService2Result.token = dribbleService2.DribbleService2(15);
 			}
 			
 			private function parseResult():void{
 				_shotVOs.removeAll();
 				
 				var obj:Object = JSON.decode(DribbleService2Result.lastResult);
-				var shots:Array = obj.shots as Array;
 				
 				for(var i:int = 0; i < obj.shots.length;i++){	
-					var vo:ShotVO = new ShotVO(obj.shots[i].image_teaser_url,obj.shots[i].image_url);
-					vo.shotId = obj.shots[i].id;
-					vo.title = obj.shots[i].title;
-					vo.likesCount = obj.shots[i].likes_count;
-					vo.viewCount = obj.shots[i].views_count;
-					vo.commentsCount = obj.shots[i].comments_count;
+					var shotVO:ShotVO = new ShotVO(obj.shots[i].image_teaser_url,obj.shots[i].image_url);
 					
+					//populate shotVO
+					shotVO.id = obj.shots[i].id;
+					shotVO.title = obj.shots[i].title;
+					shotVO.shortUrl = obj.shots[i].short_url;
+					shotVO.width = obj.shots[i].width;
+					shotVO.height = obj.shots[i].height;
+					shotVO.viewsCount = obj.shots[i].views_count;
+					shotVO.likesCount = obj.shots[i].likes_count;
+					shotVO.commentsCount = obj.shots[i].comments_count;
+					shotVO.reboundsCount = obj.shots[i].rebounds_count;	
+					shotVO.reboundsSourceId = obj.shots[i].rebounds_source_id;
+					shotVO.createdAt = obj.shots[i].created_at;
+					
+					//populate shotVO's player Object
+					shotVO.player = new PlayerVO();		
 					var player:Object = obj.shots[i].player as Object;
-					vo.userName = player.username as String;
-					vo.playerId = player.id;
+					
+					shotVO.player.id 					= player.id as int;
+					shotVO.player.name 					= player.name as String;
+					shotVO.player.username 				= player.username as String;
+					shotVO.player.url 					= player.url as String;
+					shotVO.player.avatarUrl 			= player.avatar_url as String;
+					shotVO.player.location 				= player.location as String;
+					shotVO.player.twitterScreenName 	= player.twitter_screen_name as String;
+					shotVO.player.draftedByPlayerId 	= player.drafted_by as int;
+					shotVO.player.shotsCount 			= player.shots_count as int;
+					shotVO.player.drafteesCount 		= player.draftees_count as int;
+					shotVO.player.followersCount 		= player.followers_count as int;
+					shotVO.player.followingCount 		= player.following_count as int;
+					shotVO.player.commentsCount 		= player.comments_count as int;
+					shotVO.player.commentsReceivedCount = player.comments_received_count as int;
+					shotVO.player.likesCount 			= player.likes_count as int;
+					shotVO.player.likesReceivedCount 	= player.likes_received_count as int;
+					shotVO.player.reboundsCount 		= player.rebounds_count as int;
+					shotVO.player.createdAt 			= player.created_at as String;
 				
-					_shotVOs.addItem(vo);
+					trace(shotVO.player.username);
+					
+					_shotVOs.addItem(shotVO);
 				}
 			}
 			

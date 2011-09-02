@@ -1,3 +1,8 @@
+- Player view
+- Followers with
+_ link a follower to a view of his recent work.
+- player's likes.
+- like a liked one to a view of his recent work.
 - remove event listeners. slowing down app.
 - toggle list/tiles for popular view
 - add player search
@@ -5,3 +10,10 @@
 - create frame for shot and gradient bg
 - tiltable view for shot with vertical layout when upright, horiz when sizeways
 6. pressing popular should go back to list not individual photo
+
+architecture:
+all navigation within one viewnavigator.
+
+
+refactoring:
+avoid duplication for shot overviews for liked one's work, follower's work, player's work, popular etc. 
