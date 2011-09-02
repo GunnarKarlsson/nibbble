@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:playershots="services.playershots.*"
 		tabBarVisible="false" title="player shots"
-		viewActivate="init()">
+		viewActivate="init()" xmlns:itemRenderers="itemRenderers.*">
 	
 	<fx:Declarations>
 		<s:HTTPService id="service" url="{_url}"
@@ -14,8 +14,12 @@
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
 			
+			import helpers.ShotVOArrayCollectionPopulator;
+			
 			import mx.collections.ArrayCollection;
 			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
 			//first step: display player's work as tiles
 			//avatar
 			//recent work
@@ -33,11 +37,17 @@
 			}
 			
 			private function serviceResultHandler(event:ResultEvent):void{
-				trace(event.result);
+				//trace(event.result as Array);
 				_shotVOs.removeAll();
-				var obj:Object = JSON.decode(event.result.lastResult);
-				var shots:Array = obj.shots as Array;
-				
+				//trace(service.lastResult)
+				//trace("Decoding: "+JSON.decode(event.result.toString));
+				var obj:Object = JSON.decode(service.lastResult.toString());
+				_shotVOs = ShotVOArrayCollectionPopulator.execute(obj);				
+			}
+			
+			private function listChangeHandler(event:IndexChangeEvent):void{
+				var item:Object = listDisplay.dataProvider.getItemAt(event.newIndex);
+				navigator.pushView(ShotView, item);			
 			}
 			
 		]]>
@@ -47,23 +57,18 @@
 		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
 	</s:navigationContent>
 	
+	
+	
+	<!--<s:Label text="{data.username}"/>-->
+	
 	<s:layout>
-		<s:VerticalLayout verticalAlign="middle" horizontalAlign="center"/>
+		<s:VerticalLayout horizontalAlign="center" paddingLeft="10" paddingRight="10"/>
 	</s:layout>
-	<s:Label text="{data.username}"/>
 	
-		<s:TileGroup horizontalGap="1" verticalGap="1">
-			<s:Button label="1" width="50" height="50" />
-			<s:Button label="2" width="50" height="50" />
-			<s:Button label="3" width="50" height="50" />
-			<s:Button label="4" width="50" height="50" />
-			<s:Button label="5" width="50" height="50" />
-			<s:Button label="6" width="50" height="50" />
-			<s:Button label="7" width="50" height="50" />
-			<s:Button label="8" width="50" height="50" />
-			<s:Button label="9" width="50" height="50" />             
-		</s:TileGroup>
-
-
-	
+	<s:List id="listDisplay" itemRenderer="itemRenderers.TileItemRenderer" width="100%" dataProvider="{_shotVOs}" change="listChangeHandler(event)">
+		<s:layout>
+			<s:TileLayout paddingLeft="5" paddingRight="5" horizontalGap="5" verticalGap="5"/>
+		</s:layout>
+	</s:List>
+		
 </s:View>
