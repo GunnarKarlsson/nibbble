@@ -1,0 +1,7 @@
+- remove event listeners. slowing down app.
+- toggle list/tiles for popular view
+- add player search
+- add icons for views, likes etc to each shot
+- create frame for shot and gradient bg
+- tiltable view for shot with vertical layout when upright, horiz when sizeways
+6. pressing popular should go back to list not individual photo

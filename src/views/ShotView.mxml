@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="closeup"
+		viewActivate="viewActivateHandler()"
+		viewDeactivate="viewDeactivateHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.sensors.Accelerometer;
+			
+			import mx.events.ResizeEvent;
+			
+			import spark.events.ViewNavigatorEvent;
+			
+			//needs to be a field to dispatch update events
+			private var meter:Accelerometer;
+			
+			private function viewActivateHandler():void{
+				if(Accelerometer.isSupported) {
+					meter= new Accelerometer();
+					meter.setRequestedUpdateInterval(0);
+					meter.addEventListener(AccelerometerEvent.UPDATE, movementDetected);	
+				}else{
+					trace("Accelerometer not supported!");
+				} 	
+			}
+			
+			private function movementDetected(event:AccelerometerEvent):void{
+				var orientation:String = stage.deviceOrientation;
+				if(orientation == "default"){
+					currentState = "portrait";
+				}else if(orientation == "upsideDown"){
+					currentState = "portrait";
+				}else if(orientation == "rotatedLeft"){
+					currentState = "landscape";
+				}else if(orientation == "rotatedRight"){
+					currentState = "landscape";
+				}
+			}
+			
+			protected function viewDeactivateHandler(event:ViewNavigatorEvent):void
+			{
+				meter.removeEventListener(AccelerometerEvent.UPDATE,movementDetected);				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="portrait"/>
+		<s:State name="landscape"/>
+	</s:states>
+
+	
+	<s:navigationContent>
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:Button label="shot details" click="navigator.pushView(views.DetailsView, data)"/>
+	</s:actionContent>
+	
+	<s:layout.portrait>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout.portrait>
+		
+	<s:layout.landscape>
+		<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout.landscape>	
+	
+	<s:Image source="{data.image}" />
+	
+	<s:VGroup>
+		<s:HGroup verticalAlign.portrait="middle">
+			<s:Image source="@Embed(source='assets/icons/PlayerIconGrey30x30.png')" />
+			<s:Label text="{data.userName}" verticalAlign="bottom"
+					 fontSize="20"/>
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign.portrait="middle">
+			<s:Image source="@Embed(source='assets/icons/ViewsIconGrey30x30.png')" />
+			<s:Label text="{data.viewCount}" verticalAlign="bottom"
+					 fontSize="20"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign.portrait="middle">
+			<s:Image source="@Embed(source='assets/icons/LikesIconGrey30x30.png')" />
+			<s:Label text="{data.likesCount}"
+					 fontSize="20"/>
+		</s:HGroup>
+		<s:HGroup fontSize="20" verticalAlign="middle">
+			<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon30x30.png')" />
+			<s:Label text="{data.commentsCount}"/>
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+
+</s:View>
