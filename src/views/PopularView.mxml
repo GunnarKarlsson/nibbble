@@ -69,7 +69,7 @@
 	<s:List id="listDisplay" contentBackgroundAlpha="0"
 			itemRenderer="itemRenderers.ShotTileItemRenderer" width="100%" height="100%" dataProvider="{_shotVOs}" change="listChangeHandler(event)">
 		<s:layout>
-			<s:TileLayout paddingLeft="5" paddingRight="5" paddingTop="10" columnAlign="justifyUsingWidth" rowAlign="justifyUsingHeight"/>
+			<s:TileLayout paddingLeft="5" paddingRight="5" paddingTop="10" columnAlign="justifyUsingWidth"/>
 		</s:layout>
 	</s:List>
 	

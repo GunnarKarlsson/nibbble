@@ -3,9 +3,6 @@
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				width="200" height="200">
 	<fx:Declarations>
-		<s:DropShadowFilter id="frameShadow" distance="3" angle="90" blurX="2" blurY="2" alpha="1" color="0x555555" />
-	</fx:Declarations>
-	<fx:Declarations>
 		<s:DropShadowFilter id="whiteShadow" distance="1" angle="0" blurX="0" blurY="0" alpha="1" color="0xffffff" />
 	</fx:Declarations>
 	
@@ -14,16 +11,14 @@
 		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 	</s:layout>
 	
-	<s:Group width="100%" height="100%">
-		<s:Rect width="100%" height="100%" radiusX="12" radiusY="12" filters="{[frameShadow]}">
-			<s:fill>
-				<s:SolidColor color="#aaaaaa"/>
-			</s:fill>
-			<!--<s:stroke>
-				<s:SolidColorStroke color="#aaaaaa" weight="1"/>
-			</s:stroke>-->
-			
-		</s:Rect>
+		<s:BorderContainer width="100%" height="100%">
+			<s:backgroundFill>
+				<!-- 0 rotation creates left to right gradient -->
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="0xffffff"/>
+					<s:GradientEntry color="0xe9e7e5"/>
+				</s:LinearGradient>
+			</s:backgroundFill>
 		
 		<s:Image id="teaserImage" source="{data.teaserImage}" top="10" left="5" right="5"/>
 		
@@ -31,5 +26,5 @@
 				 fontSize="16"
 				 top="{teaserImage.height+10+5}"
 				 color="#888888" />
-	</s:Group>
+	</s:BorderContainer>
 </s:ItemRenderer>

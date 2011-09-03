@@ -78,8 +78,20 @@
 		
 	<s:layout.landscape>
 		<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
-	</s:layout.landscape>	
-	<s:Image source="{data.image}" />
+	</s:layout.landscape>
+	
+	<s:BorderContainer width="400">
+		<s:backgroundFill>
+			<!-- 0 rotation creates left to right gradient -->
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xffffff"/>
+				<s:GradientEntry color="0xe9e7e5"/>
+			</s:LinearGradient>
+		</s:backgroundFill>
+		
+		<s:Image id="teaserImage" source="{data.image}" top="0" left="0" right="0"/>
+		
+	</s:BorderContainer>
 	
 	<s:VGroup>
 		<s:HGroup verticalAlign.portrait="middle">
