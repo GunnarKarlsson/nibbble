@@ -17,8 +17,8 @@
 			}
 			
 			private function onDeactivateApp(event:Event):void {
-				trace("nibbble client deactivated");
-				NativeApplication.nativeApplication.exit();
+				//trace("nibbble client deactivated");
+				//NativeApplication.nativeApplication.exit();
 			}
 		]]>
 	</fx:Script>

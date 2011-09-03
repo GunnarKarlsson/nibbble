@@ -4,8 +4,11 @@
 		viewActivate="viewActivateHandler()"
 		viewDeactivate="viewDeactivateHandler(event)"
 		tabBarVisible="false">
+	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:DropShadowFilter id="dropShaText" distance="1" angle="90" blurX="0" blurY="0" alpha="1" color="0xffffff" />
+		
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -17,11 +20,11 @@
 			import spark.events.ViewNavigatorEvent;
 			
 			//needs to be a field to dispatch update events
-			private var meter:Accelerometer;
+			private var meter:Accelerometer = new Accelerometer();
 			
 			private function viewActivateHandler():void{
+				
 				if(Accelerometer.isSupported) {
-					meter= new Accelerometer();
 					meter.setRequestedUpdateInterval(0);
 					meter.addEventListener(AccelerometerEvent.UPDATE, movementDetected);	
 				}else{
@@ -54,6 +57,7 @@
 		]]>
 	</fx:Script>
 	
+	
 	<s:states>
 		<s:State name="portrait"/>
 		<s:State name="landscape"/>
@@ -75,7 +79,6 @@
 	<s:layout.landscape>
 		<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
 	</s:layout.landscape>	
-	
 	<s:Image source="{data.image}" />
 	
 	<s:VGroup>
@@ -84,25 +87,36 @@
 					 y.portrait="-13" width.portrait="50" height.portrait="50"
 					 click="navigator.pushView(views.PlayerView, data.player)"/>
 			<s:Label text="{data.player.username}" verticalAlign="bottom"
-					 fontSize="20"/>
+					 fontSize="20"
+					 filters="{[dropShaText]}"/>
 		</s:HGroup>
 		
 		<s:HGroup verticalAlign.portrait="middle">
 			<s:Image source="@Embed(source='assets/icons/ViewsIconGrey50x50.png')"
 					 y.portrait="-9" width.portrait="50" height.portrait="50"/>
 			<s:Label text="{data.viewsCount}" verticalAlign="bottom"
-					 fontSize="20"/>
+					 fontSize="20"
+					 filters="{[dropShaText]}"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign.portrait="middle">
 			<s:Image source="@Embed(source='assets/icons/LikesIconGrey50x50.png')"
 					 y.portrait="-8" width.portrait="50" height.portrait="50"/>
 			<s:Label text="{data.likesCount}"
-					 fontSize="20"/>
+					 fontSize="20"
+					 filters="{[dropShaText]}"/>
 		</s:HGroup>
 		<s:HGroup fontSize="20" verticalAlign="middle">
 			<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon50x50.png')"
 					 y.portrait="-9" width.portrait="50" height.portrait="50"/>
-			<s:Label text="{data.commentsCount}"/>
+			<s:Label text="{data.commentsCount}"
+					 filters="{[dropShaText]}"/>
+		</s:HGroup>
+		<s:HGroup fontSize="20" verticalAlign="middle">
+			<s:Image source="@Embed(source='assets/icons/FollowingIconGrey50x50.png')"
+					 y.portrait="-9" width.portrait="50" height.portrait="50"
+					 click="navigator.pushView(views.FollowingView, data.player)"/>
+			<s:Label text="{data.player.followingCount}"
+					 filters="{[dropShaText]}"/>
 		</s:HGroup>
 		
 	</s:VGroup>
