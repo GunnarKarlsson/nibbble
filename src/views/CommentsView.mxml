@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="CommentView"
+		viewActivate="init()">
+	<fx:Declarations>
+		<s:HTTPService id="service" url="{_url}"
+					   result="serviceResultHandler(event)"/>
+	</fx:Declarations>
+	
+	<s:navigationContent>
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
+	</s:navigationContent>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.serialization.json.JSON;
+			
+			import helpers.CommentVOArrrayCollectionPopulator;
+			
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable]
+			private var _url:String;
+			
+			[Bindable]
+			private var _commentVOs:ArrayCollection = new ArrayCollection();
+			
+			private function init():void{
+				_url = "http://api.dribbble.com/shots/"+data.id+"/comments";
+				service.send();
+			}
+			
+			private function serviceResultHandler(event:ResultEvent):void{
+				_commentVOs.removeAll();
+				var obj:Object = JSON.decode(service.lastResult.toString());
+				_commentVOs = CommentVOArrrayCollectionPopulator.execute(obj);				
+			}
+		]]>
+	</fx:Script>
+
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
+	</s:layout>
+	
+	<s:List id="listDisplay" contentBackgroundAlpha="0"
+			itemRenderer="itemRenderers.CommentItemRenderer" width="100%" height="100%" dataProvider="{_commentVOs}" >
+		<!--<s:layout>
+			<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="20" paddingBottom="20" columnAlign="justifyUsingGap"/>
+		</s:layout>-->
+	</s:List>
+	
+	
+</s:View>

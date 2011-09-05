@@ -119,7 +119,8 @@
 		</s:HGroup>
 		<s:HGroup fontSize="20" verticalAlign="middle">
 			<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon50x50.png')"
-					 y.portrait="-9" width.portrait="50" height.portrait="50"/>
+					 y.portrait="-9" width.portrait="50" height.portrait="50"
+					 click="navigator.pushView(views.CommentsView, data)"/>
 			<s:Label text="{data.commentsCount}"
 					 filters="{[dropShaText]}"/>
 		</s:HGroup>

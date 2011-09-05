@@ -15,8 +15,6 @@
 	<fx:Script>
 		<![CDATA[
 			
-			//$ curl http://api.dribbble.com/players/simplebits/following
-			
 			import com.adobe.serialization.json.JSON;
 			
 			import helpers.PlayerVOArrayCollectionPopulator;
@@ -63,7 +61,7 @@
 	</s:layout>
 	
 	<s:List id="listDisplay" contentBackgroundAlpha="0"
-			itemRenderer="itemRenderers.PlayerTileItemRenderer" width="100%" height="100%" dataProvider="{_playerVOs}" change="listChangeHandler(event)">
+			itemRenderer="itemRenderers.PlayerItemRenderer" width="100%" height="100%" dataProvider="{_playerVOs}" change="listChangeHandler(event)">
 		<s:layout>
 			<s:TileLayout paddingLeft="5" paddingRight="5" paddingTop="20" paddingBottom="20" columnAlign="justifyUsingGap"/>
 		</s:layout>
