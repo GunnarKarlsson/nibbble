@@ -4,10 +4,14 @@ package valueObjects
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.net.URLRequest;
+	
+	import interfaces.IViewDataObject;
 
 	[Bindable]
-	public class PlayerVO
+	public class PlayerVO implements IViewDataObject
 	{
+		public static const SINGLE_PLAYERS_SHOTS_VIEW:String = "Single Player Shots View";
+		
 		public var id:int;
 		public var name:String;
 		public var username:String; 
@@ -28,6 +32,8 @@ package valueObjects
 		public var reboundsReceivedCount:int;
 		public var createdAt:String;
 		
+		private var _viewType:String;
+		
 		public var avatarImage:Bitmap;
 		
 		public function PlayerVO(avatarUrl:String){
@@ -44,6 +50,16 @@ package valueObjects
 	
 		private function assignTeaserImage(event:Event):void{
 			avatarImage = event.currentTarget.content as Bitmap;
+		}
+		
+		public function getViewType():String
+		{
+			return _viewType;
+		}
+		
+		public function setViewType(value:String):void
+		{
+			_viewType=value;
 		}
 	}
 }

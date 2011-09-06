@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="home"
+		xmlns:dribbbleservice="services.dribbbleservice.*"
+		destructionPolicy="never">
+	
+	<s:navigationContent>
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
+	</s:navigationContent>
+	
+	<fx:Script>
+		<![CDATA[
+			import valueObjects.ShotTypeVO;
+			
+			private function onClick(event:Event):void{
+				
+				var shotTypeVO:ShotTypeVO = new ShotTypeVO();
+				shotTypeVO.setViewType(ShotTypeVO.MULTIPLE_PLAYERS_SHOTS_VIEW);
+				shotTypeVO.setShotCollectionType(event.target.id as String);
+				
+				navigator.pushView(views.MultipleShotsView,shotTypeVO);
+			}
+		
+		]]>
+	</fx:Script>
+	<s:Button id="debuts" x="10" y="10" label="debuts" click="onClick(event)"/>
+	<s:Button id="everyone" x="10" y="161" label="everyone" click="onClick(event)"/>
+	<s:Button id="popular" x="10" y="332" label="popular" click="onClick(event)"/>
+</s:View>

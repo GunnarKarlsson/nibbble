@@ -14,7 +14,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import com.adobe.serialization.json.JSON;
 			
 			import helpers.PlayerVOArrayCollectionPopulator;
@@ -22,7 +21,9 @@
 			import mx.collections.ArrayCollection;
 			import mx.rpc.events.ResultEvent;
 			
-			import spark.events.IndexChangeEvent;	
+			import spark.events.IndexChangeEvent;
+			
+			import valueObjects.PlayerVO;	
 			
 			[Bindable]
 			private var _url:String;
@@ -41,8 +42,9 @@
 			}
 			
 			private function listChangeHandler(event:IndexChangeEvent):void{
-				var item:Object = listDisplay.dataProvider.getItemAt(event.newIndex);
-				navigator.pushView(PlayerView, item);			
+				var playerVO:PlayerVO = listDisplay.dataProvider.getItemAt(event.newIndex) as PlayerVO;
+				playerVO.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
+				navigator.pushView(MultipleShotsView, playerVO);			
 			}	
 			
 		]]>

@@ -58,10 +58,11 @@
       </annotation>
       <annotation name="original signature">
         <item name="returnType">opaque</item>
-        <item name="inputParamNames">per_page</item>
-        <item name="inputParams">integer</item>
+        <item name="inputParamNames">per_page,page</item>
+        <item name="inputParams">integer,integer</item>
       </annotation>
       <parameter name="per_page" type="integer"/>
+      <parameter name="page" type="integer"/>
     </function>
   </service>
 </model>

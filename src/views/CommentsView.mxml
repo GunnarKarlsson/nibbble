@@ -4,12 +4,16 @@
 		viewActivate="init()">
 	<fx:Declarations>
 		<s:HTTPService id="service" url="{_url}"
-					   result="serviceResultHandler(event)"/>
+					   result="serviceResultHandler(event)" request="{_serviceRequestParams}"/>
 	</fx:Declarations>
 	
 	<s:navigationContent>
 		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
 	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:Button label="Older" click="onClickOlder()"/>
+	</s:actionContent>
 	
 	<fx:Script>
 		<![CDATA[
@@ -21,12 +25,21 @@
 			import mx.rpc.events.ResultEvent;
 			
 			[Bindable]
+			private var _serviceRequestParams:Object;
+			
+			[Bindable]
 			private var _url:String;
 			
 			[Bindable]
 			private var _commentVOs:ArrayCollection = new ArrayCollection();
 			
+			private var _numCommentsPerPage:int;
+			private var _pageNumber:int = 1;
+			private var _numPages:int;
+			
 			private function init():void{
+				_serviceRequestParams = new Object();
+				_serviceRequestParams.page = _pageNumber;
 				_url = "http://api.dribbble.com/shots/"+data.id+"/comments";
 				service.send();
 			}
@@ -34,7 +47,23 @@
 			private function serviceResultHandler(event:ResultEvent):void{
 				_commentVOs.removeAll();
 				var obj:Object = JSON.decode(service.lastResult.toString());
-				_commentVOs = CommentVOArrrayCollectionPopulator.execute(obj);				
+				
+				_numPages = obj.pages;
+				
+				_commentVOs = CommentVOArrrayCollectionPopulator.execute(obj);	
+				for(var i:int = 0; i < _commentVOs.length;i++){
+					_commentVOs[i].shotImage = data.teaserImage;
+					_commentVOs[i].title = data.title;
+					_commentVOs[i].commentedPlayer = data.player.username;
+				}
+			}
+			
+			private function onClickOlder():void{
+				if(_pageNumber<_numPages)_pageNumber++;
+				trace("_pageNumber:" +_pageNumber);
+				_serviceRequestParams.page = _pageNumber;
+				_url = "http://api.dribbble.com/shots/"+data.id+"/comments";
+				service.send();
 			}
 		]]>
 	</fx:Script>

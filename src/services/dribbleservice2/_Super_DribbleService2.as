@@ -30,7 +30,7 @@ internal class _Super_DribbleService2 extends com.adobe.fiber.services.wrapper.H
          operation = new mx.rpc.http.Operation(null, "DribbleService2");
          operation.url = "http://api.dribbble.com/shots/popular";
          operation.method = "GET";
-         argsArray = new Array("per_page");
+         argsArray = new Array("per_page","page");
          operation.argumentNames = argsArray;         
          operation.serializationFilter = serializer0;
          operation.resultType = String;
@@ -61,10 +61,10 @@ internal class _Super_DribbleService2 extends com.adobe.fiber.services.wrapper.H
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function DribbleService2(per_page:int) : mx.rpc.AsyncToken
+    public function DribbleService2(per_page:int, page:int) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("DribbleService2");
-		var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(per_page) ;
+		var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(per_page,page) ;
         return _internal_token;
     }
      

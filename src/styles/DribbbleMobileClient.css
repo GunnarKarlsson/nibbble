@@ -4,21 +4,22 @@
 s|ActionBar
 {
 	chromeColor: #888888;
-	color: #ffffff;
+	color: #dddddd;
 	titleAlign: center;
+	fontSize: 16;
 }
 
 s|ActionBar #titleDisplay
 {
-	color: #ffaaaa;
-	fontSize: 20;
+	color: #ffffff;
+	fontSize: 16;
 }
 
 s|TabbedViewNavigator #tabBar
 {
 	chromeColor: #888888;
 	color: #ffffff;
-	fontSize: 20;
+	fontSize: 16;
 	titleAlign: center
 }
 

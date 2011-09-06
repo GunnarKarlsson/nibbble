@@ -13,6 +13,8 @@ _ link a follower to a view of his recent work.
 - tiltable view for shot with vertical layout when upright, horiz when sizeways
 6. pressing popular should go back to list not individual photo
 
+limit characters in title string on shotitemrenderer to avoid text going outside of area
+
 architecture:
 all navigation within one viewnavigator.
 
