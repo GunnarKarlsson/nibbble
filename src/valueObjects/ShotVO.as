@@ -22,6 +22,7 @@ package valueObjects
 		public var reboundsSourceId:int;
 		public var createdAt:String;
 		public var player:PlayerVO;
+		public var bookmarked:Boolean;
 		
 		public var teaserImage:Bitmap;
 		public var image:Bitmap;

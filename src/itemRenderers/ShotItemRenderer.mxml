@@ -43,8 +43,8 @@
 	
 	<s:BitmapImage id="teaserImage" source="{data.teaserImage}" x="5" y="5"/>
 	<s:BitmapImage id="avatarImage" width="30" height="30" source="{data.player.avatarImage}" x="2" y="204"/>
-	<s:Label id="titleLabel" text="{data.title}" x="8" y="163" fontSize="12"/>
-	<s:Label id="usernameLabel" text="by {data.player.username}" x="40" y="215" fontSize="12" color="#666666"/>
+	<s:Label id="titleLabel" text="{data.title}" x="8" y="163" fontSize="12" />
+	<s:Label id="usernameLabel" text="by {data.player.username}" x="40" y="215" fontSize="12" color="#666666" />
 	
 		<!--<s:BorderContainer width="100%" height="100%">
 			<s:backgroundFill>-->

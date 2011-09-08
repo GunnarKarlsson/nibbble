@@ -2,12 +2,13 @@ package valueObjects
 {
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
-
+	
 	import interfaces.IViewDataObject;
 
 	public class ShotTypeVO extends EventDispatcher implements IViewDataObject
 	{
 		public static const MULTIPLE_PLAYERS_SHOTS_VIEW:String="Multiple Players Shots View";
+		public static const BOOKMARKED_SHOTS:String = "Bookmarked shots";
 
 		public var _shotCollectionType:String;
 

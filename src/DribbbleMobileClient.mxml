@@ -12,14 +12,25 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
+			import spark.managers.PersistenceManager;
+			
+			import utils.BookmarkRepository;
+			
+			private var _bookmarkRepository:BookmarkRepository = new BookmarkRepository();
+			
 			private function creationCompleteHandler(event:FlexEvent):void {
-				NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivateApp);
+				_bookmarkRepository.getSavedBookmarks();
+			
+				NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivateApp);	
 			}
 			
 			private function onDeactivateApp(event:Event):void {
+				_bookmarkRepository.saveBookmarks();
+				
 				//trace("nibbble client deactivated");
 				//NativeApplication.nativeApplication.exit();
 			}
+			
 		]]>
 	</fx:Script>
 

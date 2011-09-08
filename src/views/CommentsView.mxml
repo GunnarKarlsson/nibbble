@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="CommentView"
-		viewActivate="init()">
+		viewActivate="init()"
+		tabBarVisible="false">
 	<fx:Declarations>
 		<s:HTTPService id="service" url="{_url}"
 					   result="serviceResultHandler(event)" request="{_serviceRequestParams}"/>
+		
+		<s:DropShadowFilter id="dropShadowText" distance="2" angle="90" blurX="1" blurY="1" alpha="1" color="0xffffff" />
+		
 	</fx:Declarations>
 	
 	<s:navigationContent>
@@ -55,6 +59,7 @@
 					_commentVOs[i].shotImage = data.teaserImage;
 					_commentVOs[i].title = data.title;
 					_commentVOs[i].commentedPlayer = data.player.username;
+					_commentVOs[i].filter = dropShadowText;
 				}
 			}
 			
@@ -72,12 +77,8 @@
 		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
 	</s:layout>
 	
-	<s:List id="listDisplay" contentBackgroundAlpha="0"
-			itemRenderer="itemRenderers.CommentItemRenderer" width="100%" height="100%" dataProvider="{_commentVOs}" >
-		<!--<s:layout>
-			<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="20" paddingBottom="20" columnAlign="justifyUsingGap"/>
-		</s:layout>-->
+	<s:List id="listDisplay" contentBackgroundAlpha="1"
+			itemRenderer="itemRenderers.CommentItemRenderer" width="100%" height="100%" dataProvider="{_commentVOs}">
 	</s:List>
-	
 	
 </s:View>

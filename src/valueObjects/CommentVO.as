@@ -1,6 +1,7 @@
 package valueObjects
 {
 	import flash.display.Bitmap;
+	import spark.filters.DropShadowFilter;
 	
 	import interfaces.IViewDataObject;
 
@@ -15,6 +16,7 @@ package valueObjects
 		public var commentedPlayer:String;
 		public var shotImage:Bitmap;
 		public var title:String;
+		public var filter:DropShadowFilter;
 		
 		private var _viewType:String;
 		

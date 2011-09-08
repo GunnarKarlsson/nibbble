@@ -27,12 +27,17 @@
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
 			
+			import eventSystem.EventCentral;
+			import eventSystem.events.CustomEvent;
+			
 			import helpers.ShotVOArrayCollectionPopulator;
 			
 			import mx.collections.ArrayCollection;
 			import mx.rpc.events.ResultEvent;
 			
 			import spark.events.IndexChangeEvent;
+			
+			import utils.ImageListService;
 			
 			import valueObjects.PlayerVO;
 			import valueObjects.ShotTypeVO;
@@ -48,6 +53,8 @@
 			private var _serviceRequestParams:Object;
 			[Bindable]
 			private var _url:String;
+			
+			private var _imageListService:ImageListService = new ImageListService();
 			
 			private function refreshList():void{
 				getList();
@@ -66,12 +73,36 @@
 				switch(data.getViewType()){
 					case ShotTypeVO.MULTIPLE_PLAYERS_SHOTS_VIEW:
 						_url = "http://api.dribbble.com/shots/"+ data.getShotCollectionType();
+						serviceCall();
 						break;
 					
 					case PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW:
 						_url = "http://api.dribbble.com/players/"+data.id+"/shots";
+						serviceCall();
 						break;
+					
+					case ShotTypeVO.BOOKMARKED_SHOTS:
+						trace("msv switch statement");
+						EventCentral.getInstance().addEventListener(CustomEvent.DISPATCH_OF_BOOKMARKED_SHOTS_FROM_REPOSITORY,
+							onReceiptOfBookmarkedShotsFromRepository);
+						EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_FOR_BOOKMARKED_SHOTS_FROM_REPOSITORY));
 				}
+				
+			}
+			
+			private function onReceiptOfBookmarkedShotsFromRepository(event:CustomEvent):void{
+				trace("msv onreceipt from repo");
+				var idList:Array = event.data;
+				EventCentral.getInstance().addEventListener(CustomEvent.IMAGE_LIST_READY,onImageListReady);
+				_imageListService.execute(idList);
+			}
+			
+			private function onImageListReady(event:CustomEvent):void{
+				trace("msv onImagelistready");
+				_shotVOs = _imageListService.getImageList();
+			}
+			
+			private function serviceCall():void{
 				_serviceRequestParams = new Object();
 				_serviceRequestParams.per_page = _shotsPerPage;
 				_serviceRequestParams.page = _pageNumber;

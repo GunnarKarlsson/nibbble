@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark" title="closeup"
 		viewActivate="viewActivateHandler()"
 		viewDeactivate="viewDeactivateHandler(event)"
@@ -10,9 +10,27 @@
 		<s:DropShadowFilter id="dropShaText" distance="1" angle="90" blurX="0" blurY="0" alpha="1" color="0xffffff" />
 		
 	</fx:Declarations>
+		
+	<s:states>
+		<s:State name="portrait"/>
+		<s:State name="landscape"/>
+	</s:states>
 	
 	<fx:Script>
 		<![CDATA[
+			import utils.BookmarkRepository;
+			
+			[Embed(source="../assets/icons/bookmarkActive.png")]
+			private var BookmarkActiveIcon:Class;
+		
+			[Embed(source="../assets/icons/bookmarkInactive.png")]
+			private var BookmarkInactiveIcon:Class;
+			
+			import adobe.utils.CustomActions;
+			
+			import eventSystem.EventCentral;
+			import eventSystem.events.CustomEvent;
+			
 			import flash.sensors.Accelerometer;
 			
 			import mx.events.ResizeEvent;
@@ -24,7 +42,23 @@
 			//needs to be a field to dispatch update events
 			private var meter:Accelerometer = new Accelerometer();
 			
+			
+			private var _isBookmarked:Boolean;
+			private var _bookmarkActiveIcon:Bitmap = new BookmarkActiveIcon();
+			private var _bookmarkInactiveIcon:Bitmap = new BookmarkInactiveIcon();
+			[Bindable]
+			private var _bookmarkActiveImage:Image = new Image();
+			[Bindable]
+			private var _bookmarkInactiveImage:Image = new Image();
+			
 			private function viewActivateHandler():void{
+				
+				initBookmarkIcon();
+				
+				EventCentral.getInstance().addEventListener(CustomEvent.IS_SHOT_BOOKMARKED_RESPONSE,onIsShotBookmarkedResponse);
+				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_SHOT_BOOKMARK_REMOVED,onConfirmationShotBookmarkRemoved);
+				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_NEW_SHOT_BOOKMARK_CREATED,onConfirmationNewShotBookmarkCreated);
+				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.IS_SHOT_BOOKMARKED_QUERY,data.id));
 				
 				if(Accelerometer.isSupported) {
 					meter.setRequestedUpdateInterval(0);
@@ -32,6 +66,50 @@
 				}else{
 					trace("Accelerometer not supported!");
 				} 	
+			}
+			
+			private function initBookmarkIcon():void{
+				_bookmarkInactiveImage.source = _bookmarkInactiveIcon;
+				_bookmarkInactiveImage.x = 0;
+				_bookmarkInactiveImage.y = 0;
+				_bookmarkInactiveImage.addEventListener(MouseEvent.CLICK,onInactiveBookmarkClick);
+				_bookmarkActiveImage.source = _bookmarkActiveIcon; 
+				_bookmarkActiveImage.x = 0;
+				_bookmarkActiveImage.y = 0;
+				_bookmarkActiveImage.addEventListener(MouseEvent.CLICK, onActiveBookmarkClick);
+				bookmarkHGroup.addElement(_bookmarkInactiveImage);
+				bookmarkHGroup.addElement(_bookmarkActiveImage);
+				_bookmarkActiveImage.visible = false;
+			}
+			
+			private function onConfirmationNewShotBookmarkCreated(event:CustomEvent):void{
+				trace("onConfirmationNewShotBookmarkCreated");
+				if(event.id == data.id){
+					if(bookmarkHGroup.contains(_bookmarkInactiveImage))bookmarkHGroup.removeElement(_bookmarkInactiveImage);
+					_bookmarkInactiveImage.visible = false;
+					bookmarkHGroup.addElement(_bookmarkActiveImage);
+					_bookmarkActiveImage.visible = true;
+				}
+			}
+			
+			private function onConfirmationShotBookmarkRemoved(event:CustomEvent):void{
+				trace("onConfirmationShotBookmarkRemoved");
+				if(event.id == data.id){
+					if(bookmarkHGroup.contains(_bookmarkActiveImage))bookmarkHGroup.removeElement(_bookmarkActiveImage);
+					_bookmarkActiveImage.visible = false;
+					bookmarkHGroup.addElement(_bookmarkInactiveImage);
+					_bookmarkInactiveImage.visible = true;
+				}
+			}
+			
+			private function onIsShotBookmarkedResponse(event:CustomEvent):void{
+				if(event.id == data.id && event.isBookmarked == true){
+					if(bookmarkHGroup.contains(_bookmarkInactiveImage))bookmarkHGroup.removeElement(_bookmarkInactiveImage);
+					_bookmarkInactiveImage.visible = false;
+					bookmarkHGroup.addElement(_bookmarkActiveImage);
+					_bookmarkActiveImage.visible = true;
+					
+				}
 			}
 			
 			private function movementDetected(event:AccelerometerEvent):void{
@@ -61,15 +139,17 @@
 				navigator.pushView(views.MultipleShotsView, data.player);
 			}
 			
+			private function onInactiveBookmarkClick(event:Event):void{
+				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.NEW_SHOT_BOOKMARK,data.id));
+			}
+			
+			private function onActiveBookmarkClick(event:Event):void{	
+				trace("onActiveBookmarkClicked()")
+				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_TO_REMOVE_SHOT_BOOKMARK,data.id));
+			}
+			
 		]]>
 	</fx:Script>
-	
-	
-	<s:states>
-		<s:State name="portrait"/>
-		<s:State name="landscape"/>
-	</s:states>
-
 	
 	<s:navigationContent>
 		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
@@ -96,7 +176,7 @@
 		
 	</s:BorderContainer>
 	
-	<s:VGroup>
+	<s:VGroup id="vGroup">
 		<s:HGroup verticalAlign.portrait="middle">
 			<s:Image id="playerImage" source="@Embed(source='assets/icons/PlayerIconGrey50x50.png')"
 					 y.portrait="-13" width.portrait="50" height.portrait="50"
@@ -133,6 +213,9 @@
 					 click="navigator.pushView(views.MultiplePlayerAvatarsView, data.player)"/>
 			<s:Label text="{data.player.followingCount}"
 					 filters="{[dropShaText]}"/>
+		</s:HGroup>
+		
+		<s:HGroup id="bookmarkHGroup" verticalAlign="middle">
 		</s:HGroup>
 		
 	</s:VGroup>

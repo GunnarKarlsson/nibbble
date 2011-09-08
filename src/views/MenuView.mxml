@@ -20,10 +20,17 @@
 				
 				navigator.pushView(views.MultipleShotsView,shotTypeVO);
 			}
+			
+			private function onClickBookmarks(event:Event):void{
+				var shotTypeVO:ShotTypeVO = new ShotTypeVO();
+				shotTypeVO.setViewType(ShotTypeVO.BOOKMARKED_SHOTS);
+				navigator.pushView(MultipleShotsView,shotTypeVO);
+			}
 		
 		]]>
 	</fx:Script>
 	<s:Button id="debuts" x="10" y="10" label="debuts" click="onClick(event)"/>
-	<s:Button id="everyone" x="10" y="161" label="everyone" click="onClick(event)"/>
-	<s:Button id="popular" x="10" y="332" label="popular" click="onClick(event)"/>
+	<s:Button id="everyone" x="10" y="111" label="everyone" click="onClick(event)"/>
+	<s:Button id="popular" x="10" y="207" label="popular" click="onClick(event)"/>
+	<s:Button x="10" y="310" label="bookmarked shots" click="onClickBookmarks(event)"/>
 </s:View>
