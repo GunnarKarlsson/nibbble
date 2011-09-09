@@ -17,6 +17,7 @@
 	</s:navigationContent>
 	
 	<s:actionContent>
+		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="navigator.pushView(MenuView)"/>
 		<s:Button label="newer" click="getNewerPage()"/>
 		<s:Button label="older" click="getOlderPage()"/>
 		<s:Button icon="@Embed(source='assets/icons/refresh48x48.png')" 
@@ -39,6 +40,7 @@
 			
 			import utils.ImageListService;
 			
+			import valueObjects.MenuItemVO;
 			import valueObjects.PlayerVO;
 			import valueObjects.ShotTypeVO;
 			import valueObjects.ShotVO;
@@ -69,10 +71,11 @@
 			private function callService():void{
 				
 				trace(data.getViewType());
+				trace(data.getTitle());
 				
 				switch(data.getViewType()){
-					case ShotTypeVO.MULTIPLE_PLAYERS_SHOTS_VIEW:
-						_url = "http://api.dribbble.com/shots/"+ data.getShotCollectionType();
+					case MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW:
+						_url = "http://api.dribbble.com/shots/"+ data.getTitle();
 						serviceCall();
 						break;
 					
@@ -81,7 +84,8 @@
 						serviceCall();
 						break;
 					
-					case ShotTypeVO.BOOKMARKED_SHOTS:
+					case MenuItemVO.BOOKMARKED_SHOTS:
+						destructionPolicy="none";
 						trace("msv switch statement");
 						EventCentral.getInstance().addEventListener(CustomEvent.DISPATCH_OF_BOOKMARKED_SHOTS_FROM_REPOSITORY,
 							onReceiptOfBookmarkedShotsFromRepository);
@@ -122,10 +126,8 @@
 				
 			}
 			
-			private function listChangeHandler(event:IndexChangeEvent):void
-			{
-				var item:Object = listDisplay.dataProvider.getItemAt(event.newIndex);
-				navigator.pushView(SingleShotView, item);
+			private function listChangeHandler(event:MouseEvent):void{
+				navigator.pushView(SingleShotView, listDisplay.selectedItem);
 			}
 			
 			private function getOlderPage():void{
@@ -141,6 +143,7 @@
 					callService();
 				}
 			}
+		
 		]]>
 	</fx:Script>
 	
@@ -149,7 +152,7 @@
 	 </s:layout>
 	
 	<s:List id="listDisplay" contentBackgroundAlpha="0"
-			itemRenderer="itemRenderers.ShotItemRenderer" width="100%" height="100%" dataProvider="{_shotVOs}" change="listChangeHandler(event)">
+			itemRenderer="itemRenderers.ShotItemRenderer" width="100%" height="100%" dataProvider="{_shotVOs}" click="listChangeHandler(event)">
 		<s:layout>
 			<s:TileLayout paddingLeft="5" paddingRight="5" paddingTop="10" columnAlign="justifyUsingWidth"/>
 		</s:layout>

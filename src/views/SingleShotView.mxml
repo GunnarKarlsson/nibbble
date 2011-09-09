@@ -1,137 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
-		xmlns:s="library://ns.adobe.com/flex/spark" title="closeup"
+		xmlns:s="library://ns.adobe.com/flex/spark"
 		viewActivate="viewActivateHandler()"
-		viewDeactivate="viewDeactivateHandler(event)"
 		tabBarVisible="false">
 	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
 		<s:DropShadowFilter id="dropShaText" distance="1" angle="90" blurX="0" blurY="0" alpha="1" color="0xffffff" />
-		
 	</fx:Declarations>
 		
 	<s:states>
-		<s:State name="portrait"/>
-		<s:State name="landscape"/>
+		<s:State name="notBookmarked"/>
+		<s:State name="bookmarked"/>
 	</s:states>
 	
+	<s:actionContent>
+		<s:Button icon.notBookmarked=	"@Embed(source='assets/icons/DribbbleClientBookMarkIcon.png')" 
+				  icon.bookmarked=		"@Embed(source='assets/icons/DribbbleClientBookMarkIconPink.png')" 
+				  click="onBookmarkClick(event)"/>
+		<s:Button icon=					"@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" 
+				  click="navigator.pushView(MenuView)"/>
+	</s:actionContent>	
+	
+	<s:navigationContent>
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
+	</s:navigationContent>
+	
+
 	<fx:Script>
 		<![CDATA[
 			import utils.BookmarkRepository;
-			
-			[Embed(source="../assets/icons/bookmarkActive.png")]
-			private var BookmarkActiveIcon:Class;
-		
-			[Embed(source="../assets/icons/bookmarkInactive.png")]
-			private var BookmarkInactiveIcon:Class;
-			
 			import adobe.utils.CustomActions;
-			
 			import eventSystem.EventCentral;
 			import eventSystem.events.CustomEvent;
-			
 			import flash.sensors.Accelerometer;
-			
 			import mx.events.ResizeEvent;
-			
 			import spark.events.ViewNavigatorEvent;
-			
 			import valueObjects.PlayerVO;
 			
 			//needs to be a field to dispatch update events
 			private var meter:Accelerometer = new Accelerometer();
 			
-			
 			private var _isBookmarked:Boolean;
-			private var _bookmarkActiveIcon:Bitmap = new BookmarkActiveIcon();
-			private var _bookmarkInactiveIcon:Bitmap = new BookmarkInactiveIcon();
+			
 			[Bindable]
-			private var _bookmarkActiveImage:Image = new Image();
-			[Bindable]
-			private var _bookmarkInactiveImage:Image = new Image();
+			private var _offset:int = 20;
 			
 			private function viewActivateHandler():void{
 				
-				initBookmarkIcon();
+				bi.visible = true;
+				
+				currentState = "notBookmarked"
 				
 				EventCentral.getInstance().addEventListener(CustomEvent.IS_SHOT_BOOKMARKED_RESPONSE,onIsShotBookmarkedResponse);
 				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_SHOT_BOOKMARK_REMOVED,onConfirmationShotBookmarkRemoved);
 				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_NEW_SHOT_BOOKMARK_CREATED,onConfirmationNewShotBookmarkCreated);
-				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.IS_SHOT_BOOKMARKED_QUERY,data.id));
-				
-				if(Accelerometer.isSupported) {
-					meter.setRequestedUpdateInterval(0);
-					meter.addEventListener(AccelerometerEvent.UPDATE, movementDetected);	
-				}else{
-					trace("Accelerometer not supported!");
-				} 	
+				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.IS_SHOT_BOOKMARKED_QUERY,data.id));	
 			}
 			
-			private function initBookmarkIcon():void{
-				_bookmarkInactiveImage.source = _bookmarkInactiveIcon;
-				_bookmarkInactiveImage.x = 0;
-				_bookmarkInactiveImage.y = 0;
-				_bookmarkInactiveImage.addEventListener(MouseEvent.CLICK,onInactiveBookmarkClick);
-				_bookmarkActiveImage.source = _bookmarkActiveIcon; 
-				_bookmarkActiveImage.x = 0;
-				_bookmarkActiveImage.y = 0;
-				_bookmarkActiveImage.addEventListener(MouseEvent.CLICK, onActiveBookmarkClick);
-				bookmarkHGroup.addElement(_bookmarkInactiveImage);
-				bookmarkHGroup.addElement(_bookmarkActiveImage);
-				_bookmarkActiveImage.visible = false;
+			private function onBookmarkClick(event:MouseEvent):void{
+				if(currentState == "bookmarked"){
+					EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_TO_REMOVE_SHOT_BOOKMARK,data.id));
+				}else{
+					EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.NEW_SHOT_BOOKMARK,data.id));
+				}
 			}
 			
 			private function onConfirmationNewShotBookmarkCreated(event:CustomEvent):void{
 				trace("onConfirmationNewShotBookmarkCreated");
 				if(event.id == data.id){
-					if(bookmarkHGroup.contains(_bookmarkInactiveImage))bookmarkHGroup.removeElement(_bookmarkInactiveImage);
-					_bookmarkInactiveImage.visible = false;
-					bookmarkHGroup.addElement(_bookmarkActiveImage);
-					_bookmarkActiveImage.visible = true;
+					currentState="bookmarked";
 				}
 			}
 			
 			private function onConfirmationShotBookmarkRemoved(event:CustomEvent):void{
 				trace("onConfirmationShotBookmarkRemoved");
 				if(event.id == data.id){
-					if(bookmarkHGroup.contains(_bookmarkActiveImage))bookmarkHGroup.removeElement(_bookmarkActiveImage);
-					_bookmarkActiveImage.visible = false;
-					bookmarkHGroup.addElement(_bookmarkInactiveImage);
-					_bookmarkInactiveImage.visible = true;
+					currentState="notBookmarked";
 				}
 			}
 			
 			private function onIsShotBookmarkedResponse(event:CustomEvent):void{
+				trace("ssv onIsShotBookmarked");
+				trace(event.id, data.id);
+				trace(event.isBookmarked,"true");
+				
 				if(event.id == data.id && event.isBookmarked == true){
-					if(bookmarkHGroup.contains(_bookmarkInactiveImage))bookmarkHGroup.removeElement(_bookmarkInactiveImage);
-					_bookmarkInactiveImage.visible = false;
-					bookmarkHGroup.addElement(_bookmarkActiveImage);
-					_bookmarkActiveImage.visible = true;
+					currentState="bookmarked";
 					
 				}
-			}
-			
-			private function movementDetected(event:AccelerometerEvent):void{
-				var orientation:String = stage.deviceOrientation;
-				if(orientation == "default"){
-					currentState = "portrait";
-				}else if(orientation == "upsideDown"){
-					currentState = "portrait";
-				}else if(orientation == "rotatedLeft"){
-					currentState = "landscape";
-				}else if(orientation == "rotatedRight"){
-					currentState = "landscape";
-				}
-			}
-			
-			protected function viewDeactivateHandler(event:ViewNavigatorEvent):void
-			{
-				meter.removeEventListener(AccelerometerEvent.UPDATE,movementDetected);				
-			}
-			
-			private function onPlayerClick(event:Event):void{
-				trace("player clicked");
 			}
 			
 			private function onClickPlayer(event:Event):void{
@@ -148,77 +104,78 @@
 				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_TO_REMOVE_SHOT_BOOKMARK,data.id));
 			}
 			
+			private function rendering():void{
+				bi.visible = false;
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
-	</s:navigationContent>
+
 		
-	<s:layout.portrait>
+	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
-	</s:layout.portrait>
-		
-	<s:layout.landscape>
-		<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
-	</s:layout.landscape>
+	</s:layout>
 	
-	<s:BorderContainer width="400">
-		<s:backgroundFill>
-			<!-- 0 rotation creates left to right gradient -->
-			<s:LinearGradient rotation="90">
-				<s:GradientEntry color="0xffffff"/>
-				<s:GradientEntry color="0xe9e7e5"/>
-			</s:LinearGradient>
-		</s:backgroundFill>
-		
-		<s:Image id="teaserImage" source="{data.image}" top="0" left="0" right="0"/>
-		
-	</s:BorderContainer>
+		<s:SkinnableContainer skinClass="skins.SingleShotImageSkin" 
+							  width="{data.image.width +_offset}" 
+							  height="{data.image.height + _offset}">
+			<s:layout>
+				<s:HorizontalLayout verticalAlign="middle" paddingLeft="{_offset/2}" paddingTop="{_offset/2}"/>
+			</s:layout>
+			<s:Image id="teaserImage" source="{data.image}" render="rendering()"/>
+			<s:BusyIndicator id="bi" x="50" y="50"/>
+		</s:SkinnableContainer>
 	
-	<s:VGroup id="vGroup">
-		<s:HGroup verticalAlign.portrait="middle">
-			<s:Image id="playerImage" source="@Embed(source='assets/icons/PlayerIconGrey50x50.png')"
-					 y.portrait="-13" width.portrait="50" height.portrait="50"
-					 click="onClickPlayer(event)"/>
-			<s:Label text="{data.player.username}" verticalAlign="bottom"
-					 fontSize="20"
-					 filters="{[dropShaText]}"/>
-		</s:HGroup>
+	<s:SkinnableContainer skinClass="skins.SingleShotDetailsSkin"
+						  width="{data.image.width +_offset}" 
+						  height="{data.image.height + _offset}" >
+	<s:HGroup x="30" y="30">
+		<s:VGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Image id="playerImage" source="@Embed(source='assets/icons/PlayerIconGrey50x50.png')"
+						 y="-13" width="50" height="50"
+						 click="onClickPlayer(event)"/>
+				<s:Label text="{data.player.username}" verticalAlign="bottom"
+						 fontSize="20"
+						 filters="{[dropShaText]}"/>
+			</s:HGroup>
+			
+			<s:HGroup verticalAlign="middle">
+				<s:Image source="@Embed(source='assets/icons/ViewsIconGrey50x50.png')"
+						 y="-9" width="50" height="50"/>
+				<s:Label text="{data.viewsCount}" verticalAlign="bottom"
+						 fontSize="20"
+						 filters="{[dropShaText]}"/>
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Image source="@Embed(source='assets/icons/LikesIconGrey50x50.png')"
+						 y="-8" width="50" height="50"/>
+				<s:Label text="{data.likesCount}"
+						 fontSize="20"
+						 filters="{[dropShaText]}"/>
+			</s:HGroup>
+		</s:VGroup>
 		
-		<s:HGroup verticalAlign.portrait="middle">
-			<s:Image source="@Embed(source='assets/icons/ViewsIconGrey50x50.png')"
-					 y.portrait="-9" width.portrait="50" height.portrait="50"/>
-			<s:Label text="{data.viewsCount}" verticalAlign="bottom"
-					 fontSize="20"
-					 filters="{[dropShaText]}"/>
-		</s:HGroup>
-		<s:HGroup verticalAlign.portrait="middle">
-			<s:Image source="@Embed(source='assets/icons/LikesIconGrey50x50.png')"
-					 y.portrait="-8" width.portrait="50" height.portrait="50"/>
-			<s:Label text="{data.likesCount}"
-					 fontSize="20"
-					 filters="{[dropShaText]}"/>
-		</s:HGroup>
-		<s:HGroup fontSize="20" verticalAlign="middle">
-			<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon50x50.png')"
-					 y.portrait="-9" width.portrait="50" height.portrait="50"
-					 click="navigator.pushView(views.CommentsView, data)"/>
-			<s:Label text="{data.commentsCount}"
-					 filters="{[dropShaText]}"/>
-		</s:HGroup>
-		<s:HGroup fontSize="20" verticalAlign="middle">
-			<s:Image source="@Embed(source='assets/icons/FollowingIconGrey50x50.png')"
-					 y.portrait="-9" width.portrait="50" height.portrait="50"
-					 click="navigator.pushView(views.MultiplePlayerAvatarsView, data.player)"/>
-			<s:Label text="{data.player.followingCount}"
-					 filters="{[dropShaText]}"/>
-		</s:HGroup>
-		
-		<s:HGroup id="bookmarkHGroup" verticalAlign="middle">
-		</s:HGroup>
-		
-	</s:VGroup>
+		<s:VGroup>
+			<s:HGroup fontSize="20" verticalAlign="middle">
+				<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon50x50.png')"
+						 y="-9" width="50" height="50"
+						 click="navigator.pushView(views.CommentsView, data)"/>
+				<s:Label text="{data.commentsCount}"
+						 filters="{[dropShaText]}"/>
+			</s:HGroup>
+			<s:HGroup fontSize="20" verticalAlign="middle">
+				<s:Image source="@Embed(source='assets/icons/FollowingIconGrey50x50.png')"
+						 y="-9" width="50" height="50"
+						 click="navigator.pushView(views.MultiplePlayerAvatarsView, data.player)"/>
+				<s:Label text="{data.player.followingCount}"
+						 filters="{[dropShaText]}"/>
+			</s:HGroup>
+			
+		</s:VGroup>
+	</s:HGroup>
+	</s:SkinnableContainer>
 	
 
 </s:View>

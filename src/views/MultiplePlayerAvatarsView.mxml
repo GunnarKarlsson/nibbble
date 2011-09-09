@@ -12,6 +12,10 @@
 					   result="serviceResultHandler(event)"/>
 	</fx:Declarations>
 	
+	<s:actionContent>
+		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="navigator.pushView(MenuView)"/>
+	</s:actionContent>	
+	
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;

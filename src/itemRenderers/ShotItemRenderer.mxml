@@ -2,16 +2,33 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				width="210" height="250" creationComplete="init()"
-				autoDrawBackground="false" contentBackgroundAlpha="0">
+				autoDrawBackground="false" contentBackgroundAlpha="0" xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Declarations>
 		<s:DropShadowFilter id="whiteShadow" distance="1" angle="0" blurX="0" blurY="0" alpha="1" color="0xffffff" />
 	</fx:Declarations>
 	
 <fx:Script>
 	<![CDATA[
+		import spark.components.BusyIndicator;
+		
+		override public function set data(value:Object):void{
+			teaserImage.source = value.teaserImage;
+			avatarImage.source = value.image;
+			titleLabel.text = truncate(value.title);
+			usernameLabel.text = "by "+ truncate(value.player.username);
+			bi.visible = false;
+		}
+		
+		private function truncate(str:String):String{
+			if(str.length > 30){
+				str = str.slice(0,30);
+				str += "...";
+			}
+			return str;
+		}
 		
 		private function init():void{
-			
+			bi.visible = true;
 		}
 		
 	]]>
@@ -20,8 +37,6 @@
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
-	
-	
 	
 	<s:Path x="1" y="1" data = "	M 0 0
 									L 207 0
@@ -41,25 +56,11 @@
 				
 	</s:Path>
 	
-	<s:BitmapImage id="teaserImage" source="{data.teaserImage}" x="5" y="5"/>
-	<s:BitmapImage id="avatarImage" width="30" height="30" source="{data.player.avatarImage}" x="2" y="204"/>
-	<s:Label id="titleLabel" text="{data.title}" x="8" y="163" fontSize="12" />
-	<s:Label id="usernameLabel" text="by {data.player.username}" x="40" y="215" fontSize="12" color="#666666" />
+	<s:Image id="teaserImage" x="5" y="5" />
+	<s:Image id="avatarImage" width="30" height="30" x="2" y="204"/>
+	<s:Label id="titleLabel" x="8" y="163" fontSize="12" />
+	<s:Label id="usernameLabel" x="40" y="215" fontSize="12" color="#666666" />
 	
-		<!--<s:BorderContainer width="100%" height="100%">
-			<s:backgroundFill>-->
-				<!-- 0 rotation creates left to right gradient -->
-				<!--<s:LinearGradient rotation="90">
-					<s:GradientEntry color="0xffffff"/>
-					<s:GradientEntry color="0xe9e7e5"/>
-				</s:LinearGradient>
-			</s:backgroundFill>
-		
-		<s:Image id="teaserImage" source="{data.teaserImage}" top="10" left="5" right="5"/>
-		
-		<s:Label text="title" left="10"
-				 fontSize="16"
-				 top="{teaserImage.height+10+5}"
-				 color="#888888" />
-	</s:BorderContainer>-->
+	<s:BusyIndicator id="bi" x="100" y="100" scaleX="0.5" scaleY="0.5"/>
+	
 </s:ItemRenderer>

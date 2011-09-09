@@ -1,9 +1,12 @@
 package valueObjects
 {
-	import flash.display.Bitmap;
+	
 	import flash.display.Loader;
+	import flash.display.Bitmap;
 	import flash.events.Event;
 	import flash.net.URLRequest;
+	
+	import spark.primitives.BitmapImage;
 
 	[Bindable]
 	public class ShotVO

@@ -13,12 +13,14 @@
 		<s:State name="disabled" />
 		<s:State name="normal" />
 	</s:states>
-	
-	<s:Rect id="background" left="0" right="0" top="0" bottom="0">
+	<fx:Declarations>
+		<s:DropShadowFilter id="dropShadowForRect" distance="2" angle="90" blurX="3" blurY="3" alpha="0.8" color="0x777777" />
+	</fx:Declarations>
+	<s:Rect id="background" left="0" right="0" top="0" bottom="0" width="100%" filters="{[dropShadowForRect]}">
 		<s:fill>
 			<s:LinearGradient rotation ="90">
-				<s:GradientEntry color="#ffffff"/>
-				<s:GradientEntry color="#eeeeee"/>
+				<s:GradientEntry color="#b9b7b5"/>
+				<s:GradientEntry color="#a8b8a4"/>
 			</s:LinearGradient>
 		</s:fill>
 	</s:Rect>
