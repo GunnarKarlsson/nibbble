@@ -61,5 +61,7 @@ package valueObjects
 		{
 			_viewType=value;
 		}
+		
+		
 	}
 }

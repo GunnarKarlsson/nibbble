@@ -6,11 +6,11 @@ package valueObjects
 	public class MenuItemVO extends EventDispatcher
 	{
 		public static const POPULAR:String = "popular";
-		public static const EVERYONE:String = "everone";
+		public static const EVERYONE:String = "everyone";
 		public static const DEBUTS:String = "debuts";
 		public static const BOOKMARKS:String = "bookmarks";
 		public static const SEARCH:String = "search";
-		public static const ABOUT_NIBBLE:String = "about nibbble";
+		public static const ABOUT_NIBBLE:String = "about";
 		public static const MULTIPLE_PLAYERS_SHOTS_VIEW:String="multiple players shots view";
 		public static const BOOKMARKED_SHOTS:String = "bookmarked shots";
 		

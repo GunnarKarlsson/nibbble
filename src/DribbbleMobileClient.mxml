@@ -4,6 +4,9 @@
 								  xmlns:dribble="services.dribbbleService.*"
 								  xmlns:dribbbleservice="services.dribbbleservice.*"
 								  creationComplete="creationCompleteHandler(event)"
+								  splashScreenImage="@Embed('assets/splash/splashScreen.png')"
+								  splashScreenMinimumDisplayTime="1000"
+								  splashScreenScaleMode="zoom"
 								  >
 	
 	<fx:Style source="styles/DribbbleMobileClient.css"/>
@@ -16,17 +19,34 @@
 			
 			import utils.BookmarkRepository;
 			
+			import views.MenuView;
+			
 			private var _bookmarkRepository:BookmarkRepository = new BookmarkRepository();
 			
 			private function creationCompleteHandler(event:FlexEvent):void {
 				_bookmarkRepository.getSavedBookmarks();
 			
-				NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivateApp);	
+				NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivateApp);
+				
+				addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);	
+			}
+			
+			private function onAddedToStage(event:Event):void{
+				removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage)
+				stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
+			}
+			
+			private function onKeyDown(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.MENU){
+					event.preventDefault();
+					trace("\nMenu Pressed\n");
+					viewNavigator.pushView(views.MenuView);
+				}
 			}
 			
 			private function onDeactivateApp(event:Event):void {
 				_bookmarkRepository.saveBookmarks();
-				
+				stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
 				//trace("nibbble client deactivated");
 				//NativeApplication.nativeApplication.exit();
 			}
@@ -38,7 +58,7 @@
 	
 	
 	<!--<s:ViewNavigator label="home" width="100%" height="100%" firstView="views.HomeView"/>-->
-	<s:ViewNavigator label="popular" width="100%" height="100%" firstView="views.MenuView"/>
+	<s:ViewNavigator id="viewNavigator" label="popular" width="100%" height="100%" firstView="views.MenuView"/>
 	<!--<s:ViewNavigator label="players" width="100%" height="100%" firstView="views.PlayerView"/>-->
 	
 </s:TabbedViewNavigatorApplication>

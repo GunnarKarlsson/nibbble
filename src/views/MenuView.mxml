@@ -53,10 +53,12 @@
 			
 			private function listClickHandler(event:MouseEvent):void{
 				switch(menuList.selectedItem.getTitle()){
-					case "about nibble" :
+					case "about" :
+						navigator.pushView(views.AboutView);
 						break;
 					
 					case "search" :
+						navigator.pushView(views.SearchView);
 						break;
 					
 					default :

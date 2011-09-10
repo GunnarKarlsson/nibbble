@@ -18,8 +18,6 @@
 	
 	<s:actionContent>
 		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="navigator.pushView(MenuView)"/>
-		<s:Button label="newer" click="getNewerPage()"/>
-		<s:Button label="older" click="getOlderPage()"/>
 		<s:Button icon="@Embed(source='assets/icons/refresh48x48.png')" 
 				  click="refreshList()"/>
 	</s:actionContent>
@@ -71,7 +69,6 @@
 			private function callService():void{
 				
 				trace(data.getViewType());
-				trace(data.getTitle());
 				
 				switch(data.getViewType()){
 					case MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW:
@@ -157,5 +154,10 @@
 			<s:TileLayout paddingLeft="5" paddingRight="5" paddingTop="10" columnAlign="justifyUsingWidth"/>
 		</s:layout>
 	</s:List>
+	
+	<s:HGroup>
+		<s:Button label="newer" click="getNewerPage()"/>
+		<s:Button label="older" click="getOlderPage()"/>
+	</s:HGroup>
 	
 </s:View>

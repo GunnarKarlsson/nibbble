@@ -133,7 +133,7 @@
 	<s:HGroup x="30" y="30">
 		<s:VGroup>
 			<s:HGroup verticalAlign="middle">
-				<s:Image id="playerImage" source="@Embed(source='assets/icons/PlayerIconGrey50x50.png')"
+				<s:Image id="playerImage" source="{data.player.avatarImage}"
 						 y="-13" width="50" height="50"
 						 click="onClickPlayer(event)"/>
 				<s:Label text="{data.player.username}" verticalAlign="bottom"
