@@ -27,6 +27,7 @@
 			import helpers.CommentVOArrrayCollectionPopulator;
 			
 			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
 			import mx.rpc.events.ResultEvent;
 			
 			[Bindable]
@@ -42,6 +43,9 @@
 			private var _pageNumber:int = 1;
 			private var _numPages:int;
 			private var _perPage:int = 15;
+			
+			[Bindable]
+			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth
 			
 			private function init():void{
 				trace("cv data.id: "+data.id);
@@ -81,11 +85,11 @@
 		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
 	</s:layout>
 	
-	<s:SkinnableContainer skinClass="skins.CommentsHeaderSkin" width="100%">
+	<s:SkinnableContainer skinClass="skins.CommentsHeaderSkin" width="{_screenWidth}">
 		
-	<s:HGroup paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" width="90%">
+	<s:HGroup paddingBottom="10" paddingLeft="0" paddingRight="0" paddingTop="10" width="90%">
 	
-		<s:Image source ="{data.teaserImage}" scaleX="0.5" scaleY="0.5"/>
+		<s:Image source ="{data.teaserImage}" scaleX="0.5" scaleY="0.5" left="10"/>
 		<s:TextArea text="comments on..{data.title} by {data.player.username}" 
 					width="90%"
 					paddingTop="15" paddingLeft="10" paddingBottom="10" paddingRight="10"

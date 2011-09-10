@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:dribbleservice2="services.dribbleservice2.*"
 		title="{data.shotType}"
-		viewActivate="getList()"
+		viewActivate="init()"
 		destructionPolicy="never"
 		tabBarVisible="false">
 	
@@ -32,6 +32,7 @@
 			import helpers.ShotVOArrayCollectionPopulator;
 			
 			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
 			import mx.rpc.events.ResultEvent;
 			
 			import spark.events.IndexChangeEvent;
@@ -56,18 +57,24 @@
 			
 			private var _imageListService:ImageListService = new ImageListService();
 			
+			[Bindable]
+			private var _pageChangeGroupWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;
+			
 			private function refreshList():void{
-				getList();
+				init();
 			}
 			
-			private function getList():void{
+			private function init():void{
+				trace("msv w: "+FlexGlobals.topLevelApplication.stage.stageWidth);
 				if(_shotVOs.length < 1){ 
 					callService();
 				}
 			}
 			
+			
+			
 			private function callService():void{
-				
+				//trace("w: "+flash.system.Capabilities.screenResolutionX);
 				trace(data.getViewType());
 				
 				switch(data.getViewType()){
@@ -155,9 +162,9 @@
 		</s:layout>
 	</s:List>
 	
-	<s:HGroup>
-		<s:Button label="newer" click="getNewerPage()"/>
-		<s:Button label="older" click="getOlderPage()"/>
+	<s:HGroup width="{_pageChangeGroupWidth}" height="40" gap="0" left="0" right="0">
+		<s:Button label="newer" width="100%" click="getNewerPage()" skinClass="skins.PageChangeButtonSkin"/>
+		<s:Button label="older" width="100%" click="getOlderPage()" skinClass="skins.PageChangeButtonSkin"/>
 	</s:HGroup>
 	
 </s:View>

@@ -32,6 +32,13 @@
 				_menuItems.addItem(new MenuItemVO(MenuItemVO.SEARCH,MenuItemVO.SEARCH));
 				_menuItems.addItem(new MenuItemVO(MenuItemVO.BOOKMARKS,MenuItemVO.BOOKMARKED_SHOTS));
 				_menuItems.addItem(new MenuItemVO(MenuItemVO.ABOUT_NIBBLE,MenuItemVO.ABOUT_NIBBLE));
+				
+				this.addEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
+			}
+			
+			private function onAddedToStage(event:Event):void{
+				"Menu View added to stage";
+				trace("mv w: "+stage.stageWidth);
 			}
 			
 			/*

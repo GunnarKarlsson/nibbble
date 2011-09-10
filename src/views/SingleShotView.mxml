@@ -28,13 +28,20 @@
 
 	<fx:Script>
 		<![CDATA[
-			import utils.BookmarkRepository;
 			import adobe.utils.CustomActions;
+			
 			import eventSystem.EventCentral;
 			import eventSystem.events.CustomEvent;
+			
 			import flash.sensors.Accelerometer;
+			
+			import mx.core.FlexGlobals;
 			import mx.events.ResizeEvent;
+			
 			import spark.events.ViewNavigatorEvent;
+			
+			import utils.BookmarkRepository;
+			
 			import valueObjects.PlayerVO;
 			
 			//needs to be a field to dispatch update events
@@ -45,7 +52,12 @@
 			[Bindable]
 			private var _offset:int = 20;
 			
+			[Bindable]
+			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth
+			
 			private function viewActivateHandler():void{
+				
+				trace("ssv w: "+_screenWidth);
 				
 				bi.visible = true;
 				
@@ -113,69 +125,75 @@
 	
 
 		
-	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
-	</s:layout>
-	
-		<s:SkinnableContainer skinClass="skins.SingleShotImageSkin" 
-							  width="{data.image.width +_offset}" 
-							  height="{data.image.height + _offset}">
-			<s:layout>
-				<s:HorizontalLayout verticalAlign="middle" paddingLeft="{_offset/2}" paddingTop="{_offset/2}"/>
-			</s:layout>
-			<s:Image id="teaserImage" source="{data.image}" render="rendering()"/>
-			<s:BusyIndicator id="bi" x="50" y="50"/>
+	<s:VGroup top="20" width="{_screenWidth}" horizontalAlign="center">
+			
+		<s:SkinnableContainer id="imageContainer" skinClass="skins.SingleShotImageSkin" 
+								  width="{data.image.width +_offset}" 
+								  height="{data.image.height + _offset}">
+				<s:layout>
+					<s:HorizontalLayout verticalAlign="middle" paddingLeft="{_offset/2}" paddingTop="{_offset/2}"/>
+				</s:layout>
+				<s:Image id="teaserImage" source="{data.image}" render="rendering()"/>
+				<s:BusyIndicator id="bi" x="50" y="50" scaleX="0.1" scaleY="0.1"/>
 		</s:SkinnableContainer>
-	
-	<s:SkinnableContainer skinClass="skins.SingleShotDetailsSkin"
-						  width="{data.image.width +_offset}" 
-						  height="{data.image.height + _offset}" >
-	<s:HGroup x="30" y="30">
-		<s:VGroup>
-			<s:HGroup verticalAlign="middle">
-				<s:Image id="playerImage" source="{data.player.avatarImage}"
-						 y="-13" width="50" height="50"
-						 click="onClickPlayer(event)"/>
-				<s:Label text="{data.player.username}" verticalAlign="bottom"
-						 fontSize="20"
-						 filters="{[dropShaText]}"/>
-			</s:HGroup>
-			
-			<s:HGroup verticalAlign="middle">
-				<s:Image source="@Embed(source='assets/icons/ViewsIconGrey50x50.png')"
-						 y="-9" width="50" height="50"/>
-				<s:Label text="{data.viewsCount}" verticalAlign="bottom"
-						 fontSize="20"
-						 filters="{[dropShaText]}"/>
-			</s:HGroup>
-			<s:HGroup verticalAlign="middle">
-				<s:Image source="@Embed(source='assets/icons/LikesIconGrey50x50.png')"
-						 y="-8" width="50" height="50"/>
-				<s:Label text="{data.likesCount}"
-						 fontSize="20"
-						 filters="{[dropShaText]}"/>
-			</s:HGroup>
-		</s:VGroup>
 		
-		<s:VGroup>
-			<s:HGroup fontSize="20" verticalAlign="middle">
-				<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon50x50.png')"
-						 y="-9" width="50" height="50"
-						 click="navigator.pushView(views.CommentsView, data)"/>
-				<s:Label text="{data.commentsCount}"
-						 filters="{[dropShaText]}"/>
-			</s:HGroup>
-			<s:HGroup fontSize="20" verticalAlign="middle">
-				<s:Image source="@Embed(source='assets/icons/FollowingIconGrey50x50.png')"
-						 y="-9" width="50" height="50"
-						 click="navigator.pushView(views.MultiplePlayerAvatarsView, data.player)"/>
-				<s:Label text="{data.player.followingCount}"
-						 filters="{[dropShaText]}"/>
+		<s:SkinnableContainer id="detailsContainer" skinClass="skins.SingleShotDetailsSkin"
+							  width="100%" height="400" >
+			
+			<s:HGroup top="100" left="100">
+				<s:VGroup>
+					<s:HGroup verticalAlign="middle">
+						<s:Image id="playerImage" source="{data.player.avatarImage}"
+								 y="-13" width="50" height="50"
+								 click="onClickPlayer(event)"/>
+						<s:Label text="{data.player.username}" verticalAlign="bottom"
+								 fontSize="20"
+								 filters="{[dropShaText]}"/>
+					</s:HGroup>
+					
+					<s:HGroup verticalAlign="middle">
+						<s:Image source="@Embed(source='assets/icons/ViewsIconGrey50x50.png')"
+								 y="-9" width="50" height="50"/>
+						<s:Label text="{data.viewsCount}" verticalAlign="bottom"
+								 fontSize="20"
+								 filters="{[dropShaText]}"/>
+					</s:HGroup>
+					<s:HGroup verticalAlign="middle">
+						<s:Image source="@Embed(source='assets/icons/LikesIconGrey50x50.png')"
+								 y="-8" width="50" height="50"/>
+						<s:Label text="{data.likesCount}"
+								 fontSize="20"
+								 filters="{[dropShaText]}"/>
+					</s:HGroup>
+				</s:VGroup>
+				
+				<s:VGroup>
+					<s:HGroup fontSize="20" verticalAlign="middle">
+						<s:Image source="@Embed(source='assets/icons/CommentsGreyIcon50x50.png')"
+								 y="-9" width="50" height="50"
+								 click="navigator.pushView(views.CommentsView, data)"/>
+						<s:Label text="{data.commentsCount}"
+								 filters="{[dropShaText]}"/>
+					</s:HGroup>
+					<s:HGroup fontSize="20" verticalAlign="middle">
+						<s:Image source="@Embed(source='assets/icons/FollowingIconGrey50x50.png')"
+								 y="-9" width="50" height="50"
+								 click="navigator.pushView(views.MultiplePlayerAvatarsView, data.player)"/>
+						<s:Label text="{data.player.followingCount}"
+								 filters="{[dropShaText]}"/>
+					</s:HGroup>
+					
+				</s:VGroup>
 			</s:HGroup>
 			
-		</s:VGroup>
-	</s:HGroup>
-	</s:SkinnableContainer>
+			
+			
+		</s:SkinnableContainer>
+		
+	</s:VGroup>
+	
+
+	
 	
 
 </s:View>
