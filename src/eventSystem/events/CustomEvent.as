@@ -19,6 +19,12 @@ package eventSystem.events
 		public static const DISPATCH_OF_BOOKMARKED_SHOTS_FROM_REPOSITORY:String = "Dispatch of bookmarked shots from repository";
 		public static const IMAGE_LIST_READY:String = "Image list ready";
 		
+		public static const ACTIONBAR_MENU_ICON_CLICKED_POPULAR_SELECTED:String = "Actionbar Menu icon clicked popular selected";
+		public static const ACTIONBAR_MENU_ICON_CLIKED_EVERYBODY_SELECTED:String = "Actionbar Menu icon clicked everybody selected";
+		public static const ACTIONBAR_MENU_ICON_CLICKED_DEBUTS_SELECTED:String = "Actionbar Menu icon clicked debuts selected";
+		public static const ACTION_BAR_MENU_ICON_CLICKED_BOOKMARKS_SELECTED:String = "Actionbar Menu icon clicked bookmarks selected";
+		public static const ACTION_BAR_MENU_ICON_CLICKED_ABOUT_SELECTED:String = "Actionbar Menu icon clicked about selected";
+		
 		public var id:int;
 		public var isBookmarked:Boolean;
 		public var data:Array;

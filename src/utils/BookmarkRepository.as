@@ -30,7 +30,7 @@ package utils
 		public function getSavedBookmarks():void{
 			//TODO
 			
-			trace("load on start");
+			trace("bmm load on start");
 			var p:PersistenceManager = new PersistenceManager();
 			var obj:Object = p.getProperty("bookmarks");
 			if(obj)_shotBookmarks = obj.data;
@@ -39,7 +39,7 @@ package utils
 		public function saveBookmarks():void{
 			//TODO
 			
-			trace("save on exit");
+			trace("bmm save on exit");
 			var p:PersistenceManager = new PersistenceManager();
 			var obj:Object = new Object();
 			obj.data = _shotBookmarks;
@@ -47,11 +47,12 @@ package utils
 		}
 		
 		private function onRequestForBookmarkedShots(event:CustomEvent):void{
+			trace("bmm req for bm shots");
 			EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.DISPATCH_OF_BOOKMARKED_SHOTS_FROM_REPOSITORY,-1,false,_shotBookmarks));
 		}
 		
 		private function onRemoveShotbookmark(event:CustomEvent):void{
-			trace("bmr onRemoveShotbookmark");
+			trace("bmm onRemoveShotbookmark");
 			for(var i:int = 0; i < _shotBookmarks.length;i++){
 				if(event.id == _shotBookmarks[i])_shotBookmarks.splice(i,1);
 			}
@@ -60,7 +61,7 @@ package utils
 		}
 		
 		private function onNewShotBookmark(event:CustomEvent):void{
-			trace("BookmarkRepo: onNewShotBookmark");
+			trace("bmm: onNewShotBookmark");
 			var newId:int = event.id;
 			
 			for(var i:int = 0; i < _shotBookmarks.length;i++){
@@ -73,6 +74,7 @@ package utils
 		}
 		
 		private function onShotBookmarkStatusQuery(event:CustomEvent):void{
+			trace("bmm status query");
 			var queriedId:int = event.id;
 			var response:Boolean = false;
 			
@@ -83,7 +85,5 @@ package utils
 			EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.IS_SHOT_BOOKMARKED_RESPONSE,event.id,response));
 		}
 		
-	
-		 
 	}
 }

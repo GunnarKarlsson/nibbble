@@ -2,29 +2,33 @@
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:dribbleservice2="services.dribbleservice2.*"
+		xmlns:comp = "components.*"
 		title="{data.shotType}"
 		viewActivate="init()"
 		destructionPolicy="never"
-		tabBarVisible="false">
+		tabBarVisible="false" >
 	
 	<fx:Declarations>
 		<s:HTTPService id="service" url="{_url}"
 					   result="serviceResultHandler(event)" request="{_serviceRequestParams}"/>
 	</fx:Declarations>
-
+	
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="navigator.pushView(views.MenuView)"/>
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="onClickMenuIcon(event)"/>	
 	</s:navigationContent>
 	
 	<s:actionContent>
-		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="navigator.pushView(MenuView)"/>
 		<s:Button icon="@Embed(source='assets/icons/refresh48x48.png')" 
 				  click="refreshList()"/>
+		<s:Button id="menuButton" icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="onClickMenuIcon(event)"/>
 	</s:actionContent>
 	
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
+			
+			import components.AlertPopUp;
+			import components.PlayerHeader;
 			
 			import eventSystem.EventCentral;
 			import eventSystem.events.CustomEvent;
@@ -36,6 +40,7 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import spark.events.IndexChangeEvent;
+			import spark.events.PopUpEvent;
 			
 			import utils.ImageListService;
 			
@@ -60,6 +65,9 @@
 			[Bindable]
 			private var _pageChangeGroupWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;
 			
+			[Bindable]
+			private var _playerHeader:PlayerHeader = new PlayerHeader();
+			
 			private function refreshList():void{
 				init();
 			}
@@ -71,26 +79,41 @@
 				}
 			}
 			
+			private function onClickMenuIcon(event:MouseEvent=null):void{
+				var alert:AlertPopUp = new AlertPopUp();
+				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
+				alert.show("message");
+			}
 			
+			private function onCloseAlert(event:Event):void{
+				trace("this closes Alert");
+			}
 			
 			private function callService():void{
-				//trace("w: "+flash.system.Capabilities.screenResolutionX);
 				trace(data.getViewType());
 				
 				switch(data.getViewType()){
 					case MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW:
+						if(headerContainer.contains(_playerHeader))headerContainer.removeElement(_playerHeader);
 						_url = "http://api.dribbble.com/shots/"+ data.getTitle();
 						serviceCall();
 						break;
 					
 					case PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW:
+						if(!headerContainer.contains(_playerHeader)){
+							headerContainer.addElement(_playerHeader);
+							_playerHeader.username = data.username;
+							_playerHeader.imageSource = data.avatarImage;
+							_playerHeader.playerVO = data as PlayerVO;
+						}
 						_url = "http://api.dribbble.com/players/"+data.id+"/shots";
+						
 						serviceCall();
 						break;
 					
 					case MenuItemVO.BOOKMARKED_SHOTS:
+						if(headerContainer.contains(_playerHeader))headerContainer.removeElement(_playerHeader);
 						destructionPolicy="none";
-						trace("msv switch statement");
 						EventCentral.getInstance().addEventListener(CustomEvent.DISPATCH_OF_BOOKMARKED_SHOTS_FROM_REPOSITORY,
 							onReceiptOfBookmarkedShotsFromRepository);
 						EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_FOR_BOOKMARKED_SHOTS_FROM_REPOSITORY));
@@ -131,7 +154,11 @@
 			}
 			
 			private function listChangeHandler(event:MouseEvent):void{
-				navigator.pushView(SingleShotView, listDisplay.selectedItem);
+				if(listDisplay!=null){
+					if(listDisplay.selectedItem!=null){
+						navigator.pushView(SingleShotView, listDisplay.selectedItem);
+					}
+				}
 			}
 			
 			private function getOlderPage():void{
@@ -152,8 +179,10 @@
 	</fx:Script>
 	
 	<s:layout>
-		 <s:VerticalLayout horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
+		 <s:VerticalLayout id="layout" horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
 	 </s:layout>
+	
+	<s:Group id="headerContainer"/>
 	
 	<s:List id="listDisplay" contentBackgroundAlpha="0"
 			itemRenderer="itemRenderers.ShotItemRenderer" width="100%" height="100%" dataProvider="{_shotVOs}" click="listChangeHandler(event)">
@@ -162,9 +191,10 @@
 		</s:layout>
 	</s:List>
 	
-	<s:HGroup width="{_pageChangeGroupWidth}" height="40" gap="0" left="0" right="0">
-		<s:Button label="newer" width="100%" click="getNewerPage()" skinClass="skins.PageChangeButtonSkin"/>
-		<s:Button label="older" width="100%" click="getOlderPage()" skinClass="skins.PageChangeButtonSkin"/>
+	<s:HGroup width="{_pageChangeGroupWidth}" height="40" gap="0" left="0" right="0" bottom="1">
+		<s:Button label="newer" width="100%" click="getNewerPage()" />
+		<s:Button width="100%" height="49" label="older" click="getOlderPage()" />
 	</s:HGroup>
+		
 	
 </s:View>

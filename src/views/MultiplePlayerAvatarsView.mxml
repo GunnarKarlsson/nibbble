@@ -9,16 +9,23 @@
 	
 	<fx:Declarations>
 		<s:HTTPService id="service" url="{_url}"
-					   result="serviceResultHandler(event)"/>
+					   result="serviceResultHandler(event)"
+					   request="{_serviceRequestParams}"/>
 	</fx:Declarations>
 	
+	<s:navigationContent>
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="onClickMenuIcon(event)"/>	
+	</s:navigationContent>
+	
 	<s:actionContent>
-		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="navigator.pushView(MenuView)"/>
+		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="onClickMenuIcon(event)"/>
 	</s:actionContent>	
 	
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
+			
+			import components.AlertPopUp;
 			
 			import helpers.PlayerVOArrayCollectionPopulator;
 			
@@ -26,17 +33,55 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import spark.events.IndexChangeEvent;
+			import spark.events.PopUpEvent;
 			
 			import valueObjects.PlayerVO;	
 			
+			private var _pageNumber:int = 1;
+			private var _shotsPerPage:int = 15;
+			[Bindable]
+			private var _serviceRequestParams:Object;
 			[Bindable]
 			private var _url:String;
 			[Bindable]
 			private var _playerVOs:ArrayCollection = new ArrayCollection();
 			
 			private function init():void{
-				_url = "http://api.dribbble.com/players/"+data.id+"/following";
-				service.send();
+				trace("mpvs init "+data.getViewType());
+				_serviceRequestParams = new Object();
+				_serviceRequestParams.per_page = _shotsPerPage;
+				_serviceRequestParams.page = _pageNumber;
+				
+				trace("PlayerVO.FOLLOWING "+PlayerVO.FOLLOWING);
+				
+
+				
+				switch(data.getViewType()){
+					
+					case PlayerVO.LIKES :
+						trace("send() for likes");
+						_url = "http://api.dribbble.com/players/"+data.id+"/likes";
+						service.send();
+						break;
+					
+					case PlayerVO.FOLLOWERS :
+						trace("send() for following");
+						_url = "http://api.dribbble.com/players/"+data.id+"/followers";
+						service.send();
+						break;
+					
+					case PlayerVO.FOLLOWING :
+						trace("send() for following");
+						_url = "http://api.dribbble.com/players/"+data.id+"/following";
+						service.send();
+						break;
+					
+					default :
+						trace("switch default");
+						break;
+				}
+				
+				
 			}
 			
 			private function serviceResultHandler(event:ResultEvent):void{
@@ -45,18 +90,28 @@
 				_playerVOs = PlayerVOArrayCollectionPopulator.execute(obj);				
 			}
 			
+			private function onClickMenuIcon(event:MouseEvent=null):void{
+				var alert:AlertPopUp = new AlertPopUp();
+				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
+				alert.show("message");
+			}
+			
+			private function onCloseAlert(event:Event):void{
+				trace("this closes Alert");
+			}
+			
 			private function listChangeHandler(event:IndexChangeEvent):void{
-				var playerVO:PlayerVO = listDisplay.dataProvider.getItemAt(event.newIndex) as PlayerVO;
-				playerVO.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
-				navigator.pushView(MultipleShotsView, playerVO);			
+				if(listDisplay!=null){
+					if(listDisplay.selectedItem!=null){
+						var playerVO:PlayerVO = listDisplay.dataProvider.getItemAt(event.newIndex) as PlayerVO;
+						playerVO.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
+						navigator.pushView(MultipleShotsView, playerVO);			
+					}
+				}
 			}	
 			
 		]]>
 	</fx:Script>
-	
-	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
-	</s:navigationContent>
 	
 	
 	

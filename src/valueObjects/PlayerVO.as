@@ -11,6 +11,10 @@ package valueObjects
 	public class PlayerVO implements IViewDataObject
 	{
 		public static const SINGLE_PLAYERS_SHOTS_VIEW:String = "Single Player Shots View";
+		public static const FOLLOWING:String = "following";
+		public static const FOLLOWERS:String = "followers";
+		public static const LIKES:String = "likes";
+		
 		
 		public var id:int;
 		public var name:String;

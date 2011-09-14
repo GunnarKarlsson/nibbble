@@ -13,22 +13,26 @@
 	</fx:Declarations>
 	
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="onClickMenuIcon(event)"/>	
 	</s:navigationContent>
 	
 	<s:actionContent>
-		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="navigator.pushView(MenuView)"/>
+		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="onClickMenuIcon(event)"/>
 	</s:actionContent>	
 	
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
 			
+			import components.AlertPopUp;
+			
 			import helpers.CommentVOArrrayCollectionPopulator;
 			
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
 			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.PopUpEvent;
 			
 			[Bindable]
 			private var _serviceRequestParams:Object;
@@ -47,6 +51,16 @@
 			[Bindable]
 			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth
 			
+			private function onClickMenuIcon(event:MouseEvent=null):void{
+				var alert:AlertPopUp = new AlertPopUp();
+				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
+				alert.show("message");
+			}
+			
+			private function onCloseAlert(event:Event):void{
+				trace("this closes Alert");
+			}	
+				
 			private function init():void{
 				trace("cv data.id: "+data.id);
 				_serviceRequestParams = new Object();
@@ -85,7 +99,7 @@
 		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
 	</s:layout>
 	
-	<s:SkinnableContainer skinClass="skins.CommentsHeaderSkin" width="{_screenWidth}">
+	<s:SkinnableContainer  width="{_screenWidth}">
 		
 	<s:HGroup paddingBottom="10" paddingLeft="0" paddingRight="0" paddingTop="10" width="90%">
 	

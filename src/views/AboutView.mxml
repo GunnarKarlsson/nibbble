@@ -6,7 +6,34 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
-	<s:Label x="49" y="323" width="382"
-			 text="Code and UI by Gunnar Karlsson. copyright 2011 Gunnar Karlsson. All rights reserved"/>
+	<s:navigationContent>
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="onClickMenuIcon(event)"/>	
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:Button id="menuButton" icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="onClickMenuIcon(event)"/>
+	</s:actionContent>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.AlertPopUp;
+			
+			import spark.events.PopUpEvent;
+			private function onClickMenuIcon(event:MouseEvent=null):void{
+				var alert:AlertPopUp = new AlertPopUp();
+				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
+				alert.show("message");
+			}
+			
+			private function onCloseAlert(event:Event):void{
+				trace("this closes Alert");
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Label x="127" y="234" width="244" fontSize="16"
+			 text="Copyright 2011 Gunnar Karlsson. All rights reserved" textAlign="center"
+			 verticalAlign="top"/>
+	<s:Image x="134" y="133" source="assets/images/LetterPressedLogo.png"/>
 	
 </s:View>

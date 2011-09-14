@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:comp="components.*"
 		viewActivate="viewActivateHandler()"
-		tabBarVisible="false">
+		tabBarVisible="false" >
 	
 	<fx:Declarations>
 		<s:DropShadowFilter id="dropShaText" distance="1" angle="90" blurX="0" blurY="0" alpha="1" color="0xffffff" />
@@ -17,18 +18,19 @@
 		<s:Button icon.notBookmarked=	"@Embed(source='assets/icons/DribbbleClientBookMarkIcon.png')" 
 				  icon.bookmarked=		"@Embed(source='assets/icons/DribbbleClientBookMarkIconPink.png')" 
 				  click="onBookmarkClick(event)"/>
-		<s:Button icon=					"@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" 
-				  click="navigator.pushView(MenuView)"/>
-	</s:actionContent>	
+		<s:Button id="menuButton" icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="onClickMenuIcon(event)"/>
+	</s:actionContent>
 	
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" />
+		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="onClickMenuIcon(event)"/>
 	</s:navigationContent>
 	
 
 	<fx:Script>
 		<![CDATA[
 			import adobe.utils.CustomActions;
+			
+			import components.AlertPopUp;
 			
 			import eventSystem.EventCentral;
 			import eventSystem.events.CustomEvent;
@@ -38,6 +40,7 @@
 			import mx.core.FlexGlobals;
 			import mx.events.ResizeEvent;
 			
+			import spark.events.PopUpEvent;
 			import spark.events.ViewNavigatorEvent;
 			
 			import utils.BookmarkRepository;
@@ -53,10 +56,37 @@
 			private var _offset:int = 20;
 			
 			[Bindable]
-			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth
+			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
+			
+			[Bindable]	
+			private var _commentsLabel:String;	
+			[Bindable]
+			private var _viewCountLabel:String;
+			[Bindable]
+			private var _likeCountLabel:String;
+			[Bindable]
+			private var _buttonWidth:int;
+			[Bindable]
+			private var _detailsWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
+			
+			private function onClickMenuIcon(event:MouseEvent=null):void{
+				var alert:AlertPopUp = new AlertPopUp();
+				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
+				alert.show("message");
+			}
+			
+			private function onCloseAlert(event:Event):void{
+				trace("this closes Alert");
+			}
 			
 			private function viewActivateHandler():void{
-				
+				_buttonWidth=FlexGlobals.topLevelApplication.stage.stageWidth/2;
+				if(data){
+					_commentsLabel = data.commentsCount +" comment"+(data.commentsCount>1?'s':' ');
+					_viewCountLabel = data.viewsCount +" view"+(data.viewsCount>1?'s':' ');
+					_likeCountLabel = data.likesCount+" likes";
+
+				}
 				trace("ssv w: "+_screenWidth);
 				
 				bi.visible = true;
@@ -131,16 +161,63 @@
 								  width="{data.image.width +_offset}" 
 								  height="{data.image.height + _offset}">
 				<s:layout>
-					<s:HorizontalLayout verticalAlign="middle" paddingLeft="{_offset/2}" paddingTop="{_offset/2}"/>
+					<s:VerticalLayout horizontalAlign="center" paddingLeft="{_offset/2}" paddingTop="{_offset/2}"/>
 				</s:layout>
 				<s:Image id="teaserImage" source="{data.image}" render="rendering()"/>
-				<s:BusyIndicator id="bi" x="50" y="50" scaleX="0.1" scaleY="0.1"/>
+				
+				<s:BusyIndicator id="bi" x="50" y="50" scaleX="0.5" scaleY="0.5"/>
+
 		</s:SkinnableContainer>
+	
+	
+	<s:SkinnableContainer id="detailsContainer" skinClass="skins.SingleShotDetailsSkin"
+						  width="100%" height="400" >
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+			<s:Label text="{data.title}"/>
+			<s:Button label="{data.player.username}" icon="{data.player.avatarImage}"  
+					  iconPlacement="left"
+					  height="60"
+					  click="onClickPlayer(event)"/>
+			<s:Button label="{_viewCountLabel}" icon="@Embed(source='assets/icons/ViewsIconGrey30x30.png')" 
+					  iconPlacement="left"  
+					  height="60" />
+			<s:Button label="{_likeCountLabel}" icon="@Embed(source='assets/icons/LikesIconGrey30x30.png')" 
+					  iconPlacement="left" 
+					  height="60" />
+			<s:Button label="{_commentsLabel}" click="navigator.pushView(views.CommentsView, data)"
+					  skinClass="components.CommentsButton"
+					  height="60"/>
 		
-		<s:SkinnableContainer id="detailsContainer" skinClass="skins.SingleShotDetailsSkin"
-							  width="100%" height="400" >
-			
-			<s:HGroup top="100" left="100">
+	</s:SkinnableContainer>
+	
+		
+	</s:VGroup>
+</s:View>
+			<!--	<s:Label id="shotTitle" text="{data.title}"/>
+				<s:HGroup verticalAlign="middle">
+					<s:HGroup id="players">
+						<s:Image id="playerImage" source="{data.player.avatarImage}"/>
+						<s:Label id="playerLabel" fontSize="20" text="{data.player.username}"/>
+					</s:HGroup>
+					<s:HGroup>
+						<s:Image id="commentsImage" source="@Embed(source='assets/icons/CommentsGreyIcon50x50.png')"/>
+						<s:Label id="commentsLabel" fontSize="20" text="{_commentsLabel}"/>
+					</s:HGroup>
+				</s:HGroup>
+				<s:HGroup verticalAlign="middle">
+					<s:HGroup id="views">
+						<s:Image source="@Embed(source='assets/icons/ViewsIconGrey50x50.png')"/>
+						<s:Label text="{_viewCountLabel}"/>
+					</s:HGroup>
+					<s:HGroup id="likes">
+						<s:Image source="@Embed(source='assets/icons/LikesIconGrey50x50.png')"/>
+						<s:Label text="{_likeCountLabel}"/>
+					</s:HGroup>
+				</s:HGroup>-->
+	
+			<!--<s:HGroup top="100" left="100">
 				<s:VGroup>
 					<s:HGroup verticalAlign="middle">
 						<s:Image id="playerImage" source="{data.player.avatarImage}"
@@ -160,7 +237,7 @@
 					</s:HGroup>
 					<s:HGroup verticalAlign="middle">
 						<s:Image source="@Embed(source='assets/icons/LikesIconGrey50x50.png')"
-								 y="-8" width="50" height="50"/>
+								 y="-8" width="50" height="50" click="navigator.pushView(views.MultipleShotsView,data.player)"/>
 						<s:Label text="{data.likesCount}"
 								 fontSize="20"
 								 filters="{[dropShaText]}"/>
@@ -184,16 +261,9 @@
 					</s:HGroup>
 					
 				</s:VGroup>
-			</s:HGroup>
+			</s:HGroup>-->
 			
 			
 			
-		</s:SkinnableContainer>
 		
-	</s:VGroup>
-	
-
-	
-	
-
-</s:View>
+		
