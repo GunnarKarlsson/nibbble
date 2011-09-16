@@ -14,11 +14,15 @@
 		<s:State name="bookmarked"/>
 	</s:states>
 	
+	<!--original files all white:-->
+	<!--DribbbleClientBookMarkIcon.png-->
+	<!--DribbbleClientBookMarkIconPink.png-->
+	
 	<s:actionContent>
-		<s:Button icon.notBookmarked=	"@Embed(source='assets/icons/DribbbleClientBookMarkIcon.png')" 
-				  icon.bookmarked=		"@Embed(source='assets/icons/DribbbleClientBookMarkIconPink.png')" 
+		<s:Button icon.notBookmarked=	"@Embed(source='assets/icons/star40x40ai3.png')" 
+				  icon.bookmarked=		"@Embed(source='assets/icons/pinkStar40x40ai3.png')" 
 				  click="onBookmarkClick(event)"/>
-		<s:Button id="menuButton" icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="onClickMenuIcon(event)"/>
+		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menu.png')" click="onClickMenuIcon(event)"/>
 	</s:actionContent>
 	
 	<s:navigationContent>

@@ -18,7 +18,7 @@
 	</s:navigationContent>
 	
 	<s:actionContent>
-		<s:Button icon="@Embed(source='assets/icons/Dribble-Client-Menu-Icon.png')" click="onClickMenuIcon(event)"/>
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/menu.png')" click="onClickMenuIcon(event)"/>
 	</s:actionContent>	
 	
 	<fx:Script>

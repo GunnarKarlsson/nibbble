@@ -8,7 +8,8 @@
 								  splashScreenScaleMode="zoom"
 								  >
 	
-	<fx:Style source="styles/DribbbleMobileClient.css"/>
+	<fx:Style source="styles/DribbbleMobileClient.css">
+	</fx:Style>
 	
 	<fx:Script>
 		<![CDATA[

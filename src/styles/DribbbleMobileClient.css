@@ -3,8 +3,8 @@
 
 s|ActionBar
 {
-	chromeColor: #888888;
-	color: #dddddd;
+	chromeColor: #cccccc;
+	color: #cccccc;
 	titleAlign: center;
 	fontSize: 16;
 }
@@ -24,9 +24,11 @@ s|TabbedViewNavigator #tabBar
 }
 
 s|View{
-	backgroundColor: #b9b7b5;
+	backgroundColor: #888888;
 }
 
 s|Label{
 	color: #95887a;
 }
+
+
