@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark">
+		xmlns:s="library://ns.adobe.com/flex/spark" xmlns:styles="styles.*">
 	<!-- host component -->
+	
 	<fx:Metadata>
 		[HostComponent("spark.components.TextArea")]
 	</fx:Metadata>
+	<fx:Declarations>
+		<styles:GraphicElementsLibrary id="graphicsLib"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			private var forCompiler:CustomTextAreaSkin;//Required
+		]]>
+	</fx:Script>
 	
 	<!-- states -->
 	<s:states>
@@ -14,7 +23,9 @@
 		<s:State name="normal" />
 	</s:states>
 	
-	<s:Rect id="background" left="0" right="0" top="0" bottom="0">
+	<!--<s:Rect id="background" left="0" right="0" top="0" bottom="0" >-->
+	
+	<s:Rect id="background" left="0" right="0" top="0" bottom="0" filters="{[graphicsLib.getDropShadowFilter()]}">
 		<s:fill>
 			<s:LinearGradient rotation ="90">
 				<s:GradientEntry color="#ffffff"/>

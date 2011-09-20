@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark">
+		xmlns:s="library://ns.adobe.com/flex/spark" xmlns:styles="styles.*">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("spark.components.TextArea")]
@@ -14,9 +14,10 @@
 		<s:State name="normal" />
 	</s:states>
 	<fx:Declarations>
+		<styles:GraphicElementsLibrary id="graphicsLib"/>
 		<s:DropShadowFilter id="dropShadowForRect" distance="2" angle="90" blurX="3" blurY="3" alpha="0.8" color="0x777777" />
 	</fx:Declarations>
-	<s:Rect id="background" left="0" right="0" top="0" bottom="0" width="100%" filters="{[dropShadowForRect]}">
+	<s:Rect id="background" left="0" right="0" top="0" bottom="0" width="100%" filters="{[graphicsLib.getDropShadowFilter()]}">
 		<s:fill>
 			<s:LinearGradient rotation ="90">
 				<s:GradientEntry color="#ffffff"/>

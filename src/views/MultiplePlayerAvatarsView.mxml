@@ -2,7 +2,6 @@
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:itemRenderers="itemRenderers.*"
-		title="Following"
 		tabBarVisible="false"
 		viewActivate="init()" 
 		destructionPolicy="never">
@@ -14,55 +13,84 @@
 	</fx:Declarations>
 	
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="onClickMenuIcon(event)"/>	
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="popup.show()"/>	
 	</s:navigationContent>
 	
 	<s:actionContent>
-		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/menu.png')" click="onClickMenuIcon(event)"/>
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="popup.show()"/>
 	</s:actionContent>	
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import com.adobe.serialization.json.JSON;
 			
 			import components.AlertPopUp;
+			import components.MenuPopUp;
 			
 			import helpers.PlayerVOArrayCollectionPopulator;
 			
-			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
 			import mx.rpc.events.ResultEvent;
 			
 			import spark.events.IndexChangeEvent;
 			import spark.events.PopUpEvent;
 			
-			import valueObjects.PlayerVO;	
+			import valueObjects.PlayerVO;
+			
+			private var popup:MenuPopUp;
 			
 			private var _pageNumber:int = 1;
+			
 			private var _shotsPerPage:int = 15;
+			private var _perPage:int = 15;
+			
 			[Bindable]
 			private var _serviceRequestParams:Object;
+			
 			[Bindable]
 			private var _url:String;
+			
 			[Bindable]
 			private var _playerVOs:ArrayCollection = new ArrayCollection();
 			
+			[Bindable]
+			private var _pageChangeGroupWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
+			
 			private function init():void{
+				
+				popup = new MenuPopUp();
+				
 				trace("mpvs init "+data.getViewType());
+				
+				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
+				
+				callService();
+			}
+			
+			private function onKeyDown(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.MENU){
+					event.preventDefault();
+					trace("\nMenu Pressed\n");
+					popup.show();
+				}
+			}
+
+			private function callService():void{	
+				
 				_serviceRequestParams = new Object();
 				_serviceRequestParams.per_page = _shotsPerPage;
 				_serviceRequestParams.page = _pageNumber;
 				
-				trace("PlayerVO.FOLLOWING "+PlayerVO.FOLLOWING);
-				
-
-				
 				switch(data.getViewType()){
 					
+					/*
 					case PlayerVO.LIKES :
 						trace("send() for likes");
 						_url = "http://api.dribbble.com/players/"+data.id+"/likes";
 						service.send();
 						break;
+					*/
 					
 					case PlayerVO.FOLLOWERS :
 						trace("send() for following");
@@ -87,7 +115,27 @@
 			private function serviceResultHandler(event:ResultEvent):void{
 				_playerVOs.removeAll();
 				var obj:Object = JSON.decode(service.lastResult.toString());
+				trace("mpv serviceResultHandler");
 				_playerVOs = PlayerVOArrayCollectionPopulator.execute(obj);				
+				
+				setNewerAndOlderButtons();
+			}
+			
+			
+			private function setNewerAndOlderButtons():void{
+				
+				if(_pageNumber>1){
+					newerButton.enabled = true;
+				}else{
+					newerButton.enabled = false;	
+				}
+				
+				if(((_pageNumber * _perPage)) >= data.commentsCount){
+					olderButton.enabled = false;
+				}else{
+					olderButton.enabled = true;
+				}
+				
 			}
 			
 			private function onClickMenuIcon(event:MouseEvent=null):void{
@@ -110,6 +158,21 @@
 				}
 			}	
 			
+			
+			private function getOlderPage():void{
+					if(_playerVOs.length > 0 ){
+						_pageNumber++;
+						callService();
+					}
+			}
+			
+			private function getNewerPage():void{
+					if(_pageNumber > 1){			
+						_pageNumber--;
+						callService();
+					}
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -122,10 +185,19 @@
 	</s:layout>
 	
 	<s:List id="listDisplay" contentBackgroundAlpha="0"
-			itemRenderer="itemRenderers.PlayerItemRenderer" width="100%" height="100%" dataProvider="{_playerVOs}" change="listChangeHandler(event)">
+			itemRenderer="itemRenderers.PlayerItemRenderer" width="100%" height="100%" 
+			dataProvider="{_playerVOs}" change="listChangeHandler(event)">
 		<s:layout>
 			<s:TileLayout paddingLeft="5" paddingRight="5" paddingTop="20" paddingBottom="20" columnAlign="justifyUsingGap"/>
 		</s:layout>
 	</s:List>
+
+	<s:HGroup width="{_pageChangeGroupWidth}" gap="0" left="0" right="0" bottom="0">
+		<s:Button id="newerButton" label="newer" 
+				  width="100%" click="getNewerPage()" skinClass="components.upButton"/>
+		<s:Button id="olderButton" 
+				  width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
+	</s:HGroup>
+
 	
 </s:View>

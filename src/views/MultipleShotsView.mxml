@@ -3,10 +3,11 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:dribbleservice2="services.dribbleservice2.*"
 		xmlns:comp = "components.*"
-		title="{data.shotType}"
 		viewActivate="init()"
 		destructionPolicy="never"
-		tabBarVisible="false" >
+		title="{_title}"
+		tabBarVisible="false" 
+		>
 	
 	<fx:Declarations>
 		<s:HTTPService id="service" url="{_url}"  result="serviceResultHandler(event)" 
@@ -16,7 +17,7 @@
 	</fx:Declarations>
 	
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="onClickMenuIcon(event)"/>	
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="popup.show()"/>	
 	</s:navigationContent>
 	
 	
@@ -25,14 +26,17 @@
 		<!--original is refresh48x48.png-->
 		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/refresh-grey-999999.png')" 
 				  click="refreshList()"/>
-		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menu-grey-999999.png')" click="onClickMenuIcon(event)"/>
+		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="popup.show()"/>
 	</s:actionContent>
 	
 	<fx:Script>
 		<![CDATA[
+		
+			
 			import com.adobe.serialization.json.JSON;
 			
 			import components.AlertPopUp;
+			import components.MenuPopUp;
 			import components.PlayerHeader;
 			
 			import eventSystem.EventCentral;
@@ -42,10 +46,14 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import spark.components.SkinnablePopUpContainer;
 			import spark.events.IndexChangeEvent;
 			import spark.events.PopUpEvent;
+			import spark.events.RendererExistenceEvent;
+			import spark.events.ViewNavigatorEvent;
 			
 			import utils.ImageListService;
 			
@@ -53,6 +61,8 @@
 			import valueObjects.PlayerVO;
 			import valueObjects.ShotTypeVO;
 			import valueObjects.ShotVO;
+			
+			private var popup:MenuPopUp;
 			
 			[Bindable]
 			private var _shotVOs:ArrayCollection = new ArrayCollection(new Array());
@@ -73,14 +83,29 @@
 			[Bindable]
 			private var _playerHeader:PlayerHeader = new PlayerHeader();
 			
+			[Bindable]
+			private var _title:String;
+			
+			
 			private function refreshList():void{
 				init();
 			}
 			
 			private function init():void{
+								
+				popup = new MenuPopUp();
+				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
 				trace("msv w: "+FlexGlobals.topLevelApplication.stage.stageWidth);
 				if(_shotVOs.length < 1){ 
 					callService();
+				}
+			}
+			
+			private function onKeyDown(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.MENU){
+					event.preventDefault();
+					trace("\nMenu Pressed\n");
+					popup.show();
 				}
 			}
 			
@@ -99,24 +124,42 @@
 				
 				switch(data.getViewType()){
 					case MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW:
+						
+						_title = data.getTitle();
+						
 						if(headerContainer.contains(_playerHeader))headerContainer.removeElement(_playerHeader);
+						
 						_url = "http://api.dribbble.com/shots/"+ data.getTitle();
 						serviceCall();
 						break;
 					
+					case PlayerVO.LIKES:
+						_url = "http://api.dribbble.com/players/"+data.id+"/likes";
+						serviceCall();
+						break;
+					
 					case PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW:
+					
 						if(!headerContainer.contains(_playerHeader)){
 							headerContainer.addElement(_playerHeader);
 							_playerHeader.username = data.username;
 							_playerHeader.imageSource = data.avatarImage;
+							_playerHeader.followingCount = data.followingCount;
+							_playerHeader.followersCount = data.followersCount;
+							_playerHeader.likesCount = data.likesCount;
 							_playerHeader.playerVO = data as PlayerVO;
 						}
+						
 						_url = "http://api.dribbble.com/players/"+data.id+"/shots";
 						
 						serviceCall();
 						break;
 					
 					case MenuItemVO.BOOKMARKED_SHOTS:
+						newerButton.enabled = false;
+						olderButton.enabled = false;
+						_title = "bookmarks";
+						
 						if(headerContainer.contains(_playerHeader))headerContainer.removeElement(_playerHeader);
 						destructionPolicy="none";
 						EventCentral.getInstance().addEventListener(CustomEvent.DISPATCH_OF_BOOKMARKED_SHOTS_FROM_REPOSITORY,
@@ -156,6 +199,20 @@
 				
 				_shotVOs = ShotVOArrayCollectionPopulator.execute(obj);
 				
+				setNewerAndOlderButtons();
+				
+			}
+			
+			private function setNewerAndOlderButtons():void{
+				
+				if(_pageNumber>1){
+					newerButton.enabled = true;
+				}else{
+					newerButton.enabled = false;	
+				}
+				
+				
+		
 			}
 			
 			private function serviceFaultHandler(event:Event):void{
@@ -183,7 +240,7 @@
 					callService();
 				}
 			}
-		
+			
 		]]>
 	</fx:Script>
 	
@@ -194,15 +251,20 @@
 	<s:Group id="headerContainer"/>
 	
 	<s:List id="listDisplay" contentBackgroundAlpha="0"
-			itemRenderer="itemRenderers.ShotItemRenderer" width="100%" height="100%" dataProvider="{_shotVOs}" click="listChangeHandler(event)">
+			itemRenderer="itemRenderers.ShotItemRenderer" 
+			width="100%" height="100%" 
+			dataProvider="{_shotVOs}"
+			
+			>
+		
 		<s:layout>
-			<s:TileLayout paddingLeft="5" paddingRight="5" paddingTop="10" columnAlign="justifyUsingWidth"/>
+			<s:TileLayout verticalGap="20" paddingLeft="5" paddingRight="5" paddingTop="10" columnAlign="justifyUsingWidth"/>
 		</s:layout>
 	</s:List>
 	
 	<s:HGroup width="{_pageChangeGroupWidth}" gap="0" left="0" right="0" bottom="0">
-		<s:Button label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
-		<s:Button width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
+		<s:Button id="newerButton" label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
+		<s:Button id="olderButton" width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
 	</s:HGroup>
 		
 	

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					  xmlns:s="library://ns.adobe.com/flex/spark" width="480" height="100">
+					  xmlns:s="library://ns.adobe.com/flex/spark" width="480" height="100" xmlns:styles="styles.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		<s:DropShadowFilter id="dropShadowFilter"/>
+		<styles:GraphicElementsLibrary id="graphicsLib"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -19,6 +19,13 @@
 			
 			[Bindable]
 			public var imageSource:Bitmap;
+			
+			[Bindable]
+			public var likesCount:int;
+			[Bindable]
+			public var followingCount:int;
+			[Bindable]
+			public var followersCount:int;
 			
 			[Bindable]
 			public var playerVO:PlayerVO;
@@ -38,12 +45,12 @@
 			private function onLikesClick(event:MouseEvent):void{
 				playerVO.setViewType(PlayerVO.LIKES);
 				trace("playerVO.getViewType: "+playerVO.getViewType());
-				FlexGlobals.topLevelApplication.viewNavigator.pushView(views.MultiplePlayerAvatarsView,playerVO);
+				FlexGlobals.topLevelApplication.viewNavigator.pushView(views.MultipleShotsView,playerVO);
 			}
 			
 		]]>
 	</fx:Script>
-<s:SkinnableContainer width="100%" height="100%" filters="{[dropShadowFilter]}">
+<s:SkinnableContainer width="100%" height="100%" filters="{[graphicsLib.getDropShadowFilter()]}">
 	<s:Rect width="100%" height="100%">
 		<s:fill>
 			<s:LinearGradient>
@@ -52,9 +59,11 @@
 			</s:LinearGradient>
 		</s:fill>
 	</s:Rect>
-	<s:HGroup x="10" y="10" width="460" height="131">
+	<s:HGroup x="10" y="10" width="460" height="131" gap="10">
 		
-		<s:Image horizontalAlign="center" source="{imageSource}" verticalAlign="middle"/>
+		<s:SkinnableContainer skinClass="skins.WhiteGradientBoxWithDropShadowSkin" width="70" height="70" >
+			<s:Image width="60" height="60" left="5" top="5" source="{imageSource}" />
+		</s:SkinnableContainer>
 		
 		<s:VGroup>
 		
@@ -63,11 +72,15 @@
 			</s:HGroup>
 			
 			<s:HGroup width="173" height="104">
-				<s:Button width="80" height="50" label="Likes" click="onLikesClick(event)" fontSize="12"/>
-				<s:Button width="100" height="50" label="followers" click="onFollowersClick(event)"
-						  fontSize="12"/>
-				<s:Button width="100" height="50" label="following" click="onFollowingClick(event)"
-						  fontSize="12"/>	
+				<s:Button width="100" height="50" label="{likesCount} likes"
+						  click="onLikesClick(event)" skinClass="skins.SquareButtonSkin"/>
+						
+				<s:Button width="110" height="50" label="{followersCount} followers" 
+						  click="onFollowersClick(event)"
+						  fontSize="12" skinClass="skins.SquareButtonSkin"/>
+				<s:Button width="110" height="50" label="following {followingCount}" 
+						  click="onFollowingClick(event)"
+						  fontSize="12" skinClass="skins.SquareButtonSkin"/>	
 			</s:HGroup>
 	
 		</s:VGroup>

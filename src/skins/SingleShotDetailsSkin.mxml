@@ -6,10 +6,6 @@
 		[HostComponent("spark.components.SkinnableContainer")]
 	</fx:Metadata>
 	
-	<fx:Declarations>
-		<s:DropShadowFilter id="dropShadowFilter"/>
-	</fx:Declarations>
-	
 	<!-- states -->
 	<s:states>
 		<s:State name="disabled" />
@@ -37,8 +33,17 @@
 			</s:LinearGradient>
 		</s:fill>
 	</s:Rect>
+	
+	<s:Rect id="topRect" x="0" y="120" width="100%" height="100%" visible="true">
+		<s:fill>
+			<s:LinearGradient>
+				<s:GradientEntry color="#bbbbbb"/>
+				<s:GradientEntry color="#cccccc"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
 		
-	<s:Group id="contentGroup" verticalCenter="0" horizontalCenter="0">
+	<s:Group id="contentGroup" horizontalCenter="0" top="50">
 	</s:Group>   
 	
 	<!-- SkinParts

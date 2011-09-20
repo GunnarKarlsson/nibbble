@@ -3,25 +3,34 @@
 								  xmlns:s=					"library://ns.adobe.com/flex/spark"
 								
 								  creationComplete="creationCompleteHandler(event)"
-								  splashScreenImage="@Embed('assets/splash/splashScreen.png')"
+								  splashScreenImage="@Embed('assets/splash/splashScreenLetterpressLogo.png')"
 								  splashScreenMinimumDisplayTime="1000"
 								  splashScreenScaleMode="zoom"
 								  >
+				
 	
 	<fx:Style source="styles/DribbbleMobileClient.css">
 	</fx:Style>
 	
 	<fx:Script>
 		<![CDATA[
+			import components.AlertPopUp;
+			
+			import eventSystem.EventCentral;
+			import eventSystem.events.CustomEvent;
+			
+			import itemRenderers.CommentItemRenderer;
+			
 			import mx.events.FlexEvent;
+			
 			import spark.events.PopUpEvent;
 			import spark.managers.PersistenceManager;
 			
-			import components.AlertPopUp;
-			import eventSystem.EventCentral;
-			import eventSystem.events.CustomEvent;
 			import utils.BookmarkRepository;
+			
 			import valueObjects.MenuItemVO;
+			
+			import views.CommentsView;
 			import views.MultipleShotsView;
 			
 			private var _bookmarkRepository:BookmarkRepository = new BookmarkRepository();
@@ -45,7 +54,7 @@
 			
 			private function onAddedToStage(event:Event):void{
 				removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage)
-				stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
+				//stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
 				callFirstView();
 			}
 			
@@ -54,18 +63,6 @@
 				vo.setTitle(MenuItemVO.POPULAR);
 				vo.setViewType(MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW);
 				viewNavigator.pushView(views.MultipleShotsView,vo);
-			}
-			
-			//on menu launch
-			
-			private function onClickMenuIcon(event:MouseEvent=null):void{
-				var alert:AlertPopUp = new AlertPopUp();
-				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
-				alert.show("message");
-			}
-			
-			private function onCloseAlert(event:Event):void{
-				trace("this closes Alert");
 			}
 			
 			//menu selection handlers
@@ -103,18 +100,10 @@
 				viewNavigator.pushView(views.MultipleShotsView,vo);
 			}
 			
-			private function onKeyDown(event:KeyboardEvent):void{
-				if(event.keyCode == Keyboard.MENU){
-					event.preventDefault();
-					trace("\nMenu Pressed\n");
-					onClickMenuIcon(event as MouseEvent);
-				}
-			}
-			
 			//on exiting app
 			private function onDeactivateApp(event:Event):void {
 				_bookmarkRepository.saveBookmarks();
-				stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
+				//stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
 				/* if want app to close down on exit, use following code
 					trace("nibbble client deactivated");
 					NativeApplication.nativeApplication.exit();

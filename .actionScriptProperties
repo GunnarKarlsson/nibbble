@@ -36,7 +36,7 @@
       <libraryPathEntry kind="3" linkType="1" path="${DCD_FIBER_LOCATION}/playerfds.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/commentButton_1/bin/commentButton_1.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/NewerButton/bin/NewerButton.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="/nibbbleMenuButtons_5/bin/nibbbleMenuButtons_5.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/nibbbleMenuButtons_9/bin/nibbbleMenuButtons_9.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
@@ -63,10 +63,13 @@
       </airSettings>
       <actionScriptSettings version="1"/>
     </buildTarget>
-    <buildTarget airDownloadURL="" androidSettingsVersion="1" buildTargetName="com.adobe.flexide.multiplatform.android.platform">
+    <buildTarget airDownloadURL="https://market.android.com/details?id=com.adobe.air" androidSettingsVersion="1" buildTargetName="com.adobe.flexide.multiplatform.android.platform">
       <multiPlatformSettings enabled="true" includePlatformLibs="false" platformID="com.adobe.flexide.multiplatform.android.platform" version="2"/>
-      <airSettings airCertificatePath="" airTimestamp="true" version="1">
-        <airExcludes/>
+      <airSettings airCertificatePath="C:/Users/Gunnar Karlsson/Desktop/final nibbble/nibbbleCertGunnarKarlsson.p12" airTimestamp="true" version="1">
+        <airExcludes>
+          <pathEntry path="blackberry-tablet.xml"/>
+          <pathEntry path="TODO"/>
+        </airExcludes>
       </airSettings>
       <actionScriptSettings version="1"/>
     </buildTarget>

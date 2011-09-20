@@ -1,19 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
-				width="210" height="270" creationComplete="init()"
-				autoDrawBackground="false" contentBackgroundAlpha="0" xmlns:mx="library://ns.adobe.com/flex/mx">
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:styles="styles.*"
+				creationComplete="init()"
+				autoDrawBackground="false" contentBackgroundAlpha="0" 
+				>
 	<fx:Declarations>
-		<s:DropShadowFilter id="whiteShadow" distance="1" angle="0" blurX="0" blurY="0" alpha="1" color="0xffffff" />
+		<styles:GraphicElementsLibrary id="graphicLib"/>
 	</fx:Declarations>
+	
+
 	
 <fx:Script>
 	<![CDATA[
+		import mx.core.FlexGlobals;
+		
 		import spark.components.BusyIndicator;
 		
+		import valueObjects.PlayerVO;
+		
+		import views.MultipleShotsView;
+		import views.SingleShotView;
+		
+		private var _data:Object;
+		
+		private function onCreationComplete():void{
+			
+		}
+		
 		override public function set data(value:Object):void{
+			_data = value;
 			teaserImage.source = value.teaserImage;
-			avatarImage.source = value.image;
+			avatarImage.source = value.player.avatarImage;
 			titleLabel.text = truncate(value.title);
 			usernameLabel.text = "by "+ truncate(value.player.username);
 			bi.visible = false;
@@ -33,10 +52,12 @@
 		
 		private function onTeaserImageClick():void{
 			trace("teaserimage click");
+			FlexGlobals.topLevelApplication.viewNavigator..pushView(SingleShotView, _data);
 		}
 		
 		private function onAvatarImageClick():void{
-			trace("avatarimageclick");	
+			_data.player.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
+			FlexGlobals.topLevelApplication.viewNavigator..pushView(MultipleShotsView, _data.player);
 		}
 		
 	]]>
@@ -46,7 +67,8 @@
 		<s:BasicLayout/>
 	</s:layout>
 	
-	<s:Path x="1" y="1" data = "	M 0 0
+	<s:Path x="1" y="1" filters="{[graphicLib.getDropShadowFilter()]}"
+						data = "	M 0 0
 									L 207 0
 									L 207 180
 									L 30 180
@@ -57,17 +79,23 @@
 		</s:stroke>
 		<s:fill>
 			<s:LinearGradient rotation="90">
-				<s:GradientEntry color="0xdddddd"/>
-				<s:GradientEntry color="0xe9e7e5"/>
+				<s:GradientEntry color="0xffffff"/>
+				<s:GradientEntry color="0xeeeeee"/>
 			</s:LinearGradient>
 		</s:fill>
 				
-	</s:Path>
+	</s:Path> 
 	
-	<s:Image id="teaserImage" x="5" y="5" click="onTeaserImageClick()"/>
-	<s:Image id="avatarImage" width="50" height="50" x="2" y="204" click="onAvatarImageClick()"/>
-	<s:Label id="titleLabel" x="8" y="163" fontSize="12" />
-	<s:Label id="usernameLabel" x="40" y="215" fontSize="12" color="#666666" />
+	<s:Image id="teaserImage" x="5" y="5" maxHeight="150" click="onTeaserImageClick()"/>
+	
+	<s:SkinnableContainer x="2" y="204" width="{avatarImage.width+10}" height="{avatarImage.height+10}" skinClass="skins.WhiteGradientBoxWithDropShadowSkin">
+		<s:Image id="avatarImage" click="onAvatarImageClick()" left="5" top="5"/>
+	</s:SkinnableContainer>
+		
+	
+
+	<s:Label id="titleLabel" x="8" y="163" fontSize="12" color="#222222"/>
+	<s:Label id="usernameLabel" x="100" y="215" fontSize="12" color="#eeeeee" />
 	
 	<s:BusyIndicator id="bi" x="100" y="100" scaleX="0.5" scaleY="0.5"/>
 	

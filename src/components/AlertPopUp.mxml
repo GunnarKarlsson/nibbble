@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 						   xmlns:s="library://ns.adobe.com/flex/spark"
-						   skinClass="skins.PopUpSkin"
-				
-						   >
+						   skinClass="skins.PopUpSkin">
 	
 	<fx:Script>
 		<![CDATA[
@@ -30,8 +28,8 @@
 			
 			public function center():void
 			{
-				this.width = 310; //activeView.width * 0.7;
-				this.height = 385; //activeView.height * 0.6;
+				this.width = activeView.width * 0.7;
+				this.height = activeView.height * 0.6;
 				
 				var newX:Number = (activeView.width / 2) - (this.width /2);
 				var newY:Number = (activeView.height / 2) - (this.height/2);
@@ -71,16 +69,13 @@
 	</fx:Declarations>
 	
 	<!-- Also uses the MyPopupSkin.mxml class -->
-	<s:VGroup left="4" right="4" top="4" horizontalAlign="center">
-		<s:Button id="popular" label="popular" click="onClick(event)" skinClass="components.popularButtonSkin"/>
-		<s:Button id="debuts" label="Debuts" click="onClick(event)" skinClass="components.debutsButtonSkin2"/>
-		<s:Button id="everyone" label="Everyone" click="onClick(event)" skinClass="components.everyoneButtonSkin"/>
-		<s:Button id="bookmarks" label="Bookmarks" click="onClick(event)" skinClass="components.bookmarksButtonSkin"/>
-		<s:Button id="about" label="About" click="onClick(event)" skinClass="components.aboutButtonSkin"/>
-		<s:HGroup horizontalAlign="right">
-			<!--<s:Button label="Close" click="this.close()" skinClass="components.closeButtonSkin2"/>-->
-		</s:HGroup>
-		
+	<s:VGroup  width="100%" height="100%" horizontalAlign="center">
+		<s:Button id="popular" label="popular" click="onClick(event)"/>
+		<s:Button id="debuts" label="Debuts" click="onClick(event)"/>
+		<s:Button id="everyone" label="Everyone" click="onClick(event)"/>
+		<s:Button id="bookmarks" label="Bookmarks" click="onClick(event)"/>
+		<s:Button id="about" label="About" click="onClick(event)"/>
+		<s:Button label="Close" click="this.close()"/>
 		
 	</s:VGroup>
 	

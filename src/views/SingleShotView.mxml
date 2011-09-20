@@ -19,14 +19,14 @@
 	<!--DribbbleClientBookMarkIconPink.png-->
 	
 	<s:actionContent>
-		<s:Button icon.notBookmarked=	"@Embed(source='assets/icons/star40x40ai3.png')" 
-				  icon.bookmarked=		"@Embed(source='assets/icons/pinkStar40x40ai3.png')" 
+		<s:Button icon.notBookmarked=	"@Embed(source='assets/icons/dribbbleIcons/star40x40ai3.png')" 
+				  icon.bookmarked=		"@Embed(source='assets/icons/dribbbleIcons/pinkStar40x40ai3.png')" 
 				  click="onBookmarkClick(event)"/>
-		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menu.png')" click="onClickMenuIcon(event)"/>
+		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="popup.show()"/>
 	</s:actionContent>
 	
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/nibbbleLogo.png')" click="onClickMenuIcon(event)"/>
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="popup.show()"/>
 	</s:navigationContent>
 	
 
@@ -50,6 +50,12 @@
 			import utils.BookmarkRepository;
 			
 			import valueObjects.PlayerVO;
+			
+			import components.MenuPopUp;
+			
+			import spark.components.SkinnablePopUpContainer;
+			
+			private var popup:MenuPopUp;
 			
 			//needs to be a field to dispatch update events
 			private var meter:Accelerometer = new Accelerometer();
@@ -84,11 +90,16 @@
 			}
 			
 			private function viewActivateHandler():void{
+				
+				popup = new MenuPopUp();
+				
+				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
+				
 				_buttonWidth=FlexGlobals.topLevelApplication.stage.stageWidth/2;
 				if(data){
-					_commentsLabel = data.commentsCount +" comment"+(data.commentsCount>1?'s':' ');
-					_viewCountLabel = data.viewsCount +" view"+(data.viewsCount>1?'s':' ');
-					_likeCountLabel = data.likesCount+" likes";
+					_commentsLabel = "comment"+(data.commentsCount>1?'s':' ');
+					_viewCountLabel = data.viewsCount;// +" view"+(data.viewsCount>1?'s':' ');
+					_likeCountLabel = data.likesCount;//+" likes";
 
 				}
 				trace("ssv w: "+_screenWidth);
@@ -101,6 +112,14 @@
 				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_SHOT_BOOKMARK_REMOVED,onConfirmationShotBookmarkRemoved);
 				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_NEW_SHOT_BOOKMARK_CREATED,onConfirmationNewShotBookmarkCreated);
 				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.IS_SHOT_BOOKMARKED_QUERY,data.id));	
+			}
+			
+			private function onKeyDown(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.MENU){
+					event.preventDefault();
+					trace("\nMenu Pressed\n");
+					popup.show();
+				}
 			}
 			
 			private function onBookmarkClick(event:MouseEvent):void{
@@ -161,7 +180,8 @@
 		
 	<s:VGroup top="20" width="{_screenWidth}" horizontalAlign="center">
 			
-		<s:SkinnableContainer id="imageContainer" skinClass="skins.SingleShotImageSkin" 
+		<s:SkinnableContainer id="imageContainer" skinClass="skins.SingleShotImageSkin"
+							  minWidth="400" minHeight="300"
 								  width="{data.image.width +_offset}" 
 								  height="{data.image.height + _offset}">
 				<s:layout>
@@ -173,8 +193,65 @@
 
 		</s:SkinnableContainer>
 	
-	
-	<s:SkinnableContainer id="detailsContainer" skinClass="skins.SingleShotDetailsSkin"
+		
+		<!--~~~~~~~~~~~speech bubble with details~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+		
+		<s:SkinnableContainer id="detailsContainer" skinClass="skins.SingleShotDetailsSkin"
+							  width="100%" height="400" >
+			<s:VGroup id="speechBubbleContents" top="0" gap="50">
+				<s:VGroup>
+					<s:Label text="{data.title}" color="#eeeeee"/>
+					<s:HGroup gap="15">
+						<s:HGroup>
+							<s:Image source="@Embed(source='assets/icons/dribbbleIcons/smallViews.png')" verticalAlign="top"/>
+							<s:Label text="{_viewCountLabel}" fontSize="16" verticalAlign="bottom"/>
+						</s:HGroup>
+						<s:HGroup>
+							<s:Image source="@Embed(source='assets/icons/dribbbleIcons/smallLikes.png')" verticalAlign="top"/>
+							<s:Label text="{_likeCountLabel}" fontSize="16" verticalAlign="bottom"/>
+						</s:HGroup>
+					</s:HGroup>
+				</s:VGroup>
+				
+				
+				<s:HGroup id="nameImageComments" width="100%" gap="50">
+					
+					<s:VGroup id="layerImageNameAndMoreButton">
+						<s:HGroup id="playerImageAndMoreButton">
+							
+							
+							<s:SkinnableContainer width="100" height="100" skinClass="skins.WhiteGradientBoxWithDropShadowSkin" 
+												  click="onClickPlayer(event)">
+								<s:layout>
+									<s:VerticalLayout verticalAlign="middle" horizontalAlign="center" paddingLeft="10" paddingTop="10"/>
+								</s:layout>
+								<s:Image source="{data.player.avatarImage}"/>
+							
+							</s:SkinnableContainer>	
+						</s:HGroup>	 
+						<s:Label text="{data.player.username}" fontSize="16"/>	
+					</s:VGroup>
+					
+					<s:VGroup>
+						<s:HGroup>
+							<s:SkinnableContainer width="100" skinClass="skins.CommentsIconShapeSkin"
+												  click="navigator.pushView(views.CommentsView, data)">
+								<s:layout>
+									<s:VerticalLayout verticalAlign="middle" horizontalAlign="center" paddingLeft="3" paddingTop="20"/>
+								</s:layout>
+								<s:Label text="{data.commentsCount}" fontSize="30"/>
+								<s:Label text="{_commentsLabel}" fontSize="16"/>
+							</s:SkinnableContainer>
+						</s:HGroup>
+						
+					</s:VGroup>
+				</s:HGroup>
+			
+			</s:VGroup>
+			
+		</s:SkinnableContainer>
+		
+	<!--<s:SkinnableContainer id="detailsContainer" skinClass="skins.SingleShotDetailsSkin"
 						  width="100%" height="400" >
 		<s:layout>
 			<s:VerticalLayout/>
@@ -194,7 +271,7 @@
 					  skinClass="components.CommentsButton"
 					  height="60"/>
 		
-	</s:SkinnableContainer>
+	</s:SkinnableContainer>-->
 	
 		
 	</s:VGroup>
