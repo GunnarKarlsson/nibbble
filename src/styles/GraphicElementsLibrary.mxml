@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="400" height="300">
+	
+	<fx:Declarations>
+		<s:DropShadowFilter id="dropShadowFilter" alpha="0.5" distance="4" blurX="2" blurY="2" color="#444444"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[			
+			public function getDropShadowFilter():spark.filters.DropShadowFilter{
+				var color:uint = 0x444444;
+				var dropShadowFilter:spark.filters.DropShadowFilter = new spark.filters.DropShadowFilter(4,45,color,0.5,2,2);
+				return dropShadowFilter;
+			}
+		]]>
+	</fx:Script>
+	
+
+</s:Group>
