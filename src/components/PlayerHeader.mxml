@@ -18,6 +18,9 @@
 			public var username:String;
 			
 			[Bindable]
+			public var numShots:int;
+			
+			[Bindable]
 			public var imageSource:Bitmap;
 			
 			[Bindable]
@@ -68,7 +71,7 @@
 		<s:VGroup>
 		
 			<s:HGroup>
-				<s:Label text="{username}" verticalAlign="middle" fontSize="14"/>
+				<s:Label text="{username} : {numShots} shots" verticalAlign="middle" fontSize="14"/>
 			</s:HGroup>
 			
 			<s:HGroup width="173" height="104">

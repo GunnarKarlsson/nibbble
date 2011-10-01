@@ -9,11 +9,16 @@
 		tabBarVisible="false" 
 		>
 	
+	<s:states>
+		<s:State name="loadingState"/>
+		<s:State name="completeState"/>
+	</s:states>
+	
 	<fx:Declarations>
 		<s:HTTPService id="service" url="{_url}"  result="serviceResultHandler(event)" 
 					   request="{_serviceRequestParams}"
 					   fault="serviceFaultHandler(event)"/>
-				
+		
 	</fx:Declarations>
 	
 	<s:navigationContent>
@@ -31,7 +36,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-		
+			
 			
 			import com.adobe.serialization.json.JSON;
 			
@@ -62,7 +67,7 @@
 			import valueObjects.ShotTypeVO;
 			import valueObjects.ShotVO;
 			
-			private var popup:MenuPopUp;
+			
 			
 			[Bindable]
 			private var _shotVOs:ArrayCollection = new ArrayCollection(new Array());
@@ -86,16 +91,18 @@
 			[Bindable]
 			private var _title:String;
 			
+			private var _alert:AlertPopUp = new AlertPopUp();
+			private var popup:MenuPopUp = new MenuPopUp();
 			
 			private function refreshList():void{
-				init();
+				callService();
 			}
 			
 			private function init():void{
-								
-				popup = new MenuPopUp();
+				
+				//popup = new MenuPopUp();
 				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
-				trace("msv w: "+FlexGlobals.topLevelApplication.stage.stageWidth);
+				
 				if(_shotVOs.length < 1){ 
 					callService();
 				}
@@ -110,16 +117,20 @@
 			}
 			
 			private function onClickMenuIcon(event:MouseEvent=null):void{
-				var alert:AlertPopUp = new AlertPopUp();
-				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
-				alert.show("message");
+				//var alert:AlertPopUp = new AlertPopUp();
+				_alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
+				_alert.show("message");
 			}
 			
 			private function onCloseAlert(event:Event):void{
 				trace("this closes Alert");
+				_alert.removeEventListener(PopUpEvent.CLOSE, onCloseAlert);
 			}
 			
 			private function callService():void{
+				
+				currentState="loadingState";
+				
 				trace(data.getViewType());
 				
 				switch(data.getViewType()){
@@ -139,7 +150,7 @@
 						break;
 					
 					case PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW:
-					
+						
 						if(!headerContainer.contains(_playerHeader)){
 							headerContainer.addElement(_playerHeader);
 							_playerHeader.username = data.username;
@@ -147,6 +158,7 @@
 							_playerHeader.followingCount = data.followingCount;
 							_playerHeader.followersCount = data.followersCount;
 							_playerHeader.likesCount = data.likesCount;
+							_playerHeader.numShots = data.shotsCount;
 							_playerHeader.playerVO = data as PlayerVO;
 						}
 						
@@ -156,8 +168,8 @@
 						break;
 					
 					case MenuItemVO.BOOKMARKED_SHOTS:
-						newerButton.enabled = false;
-						olderButton.enabled = false;
+						if(newerButton)newerButton.enabled = false;
+						if(olderButton)olderButton.enabled = false;
 						_title = "bookmarks";
 						
 						if(headerContainer.contains(_playerHeader))headerContainer.removeElement(_playerHeader);
@@ -170,18 +182,26 @@
 			}
 			
 			private function onReceiptOfBookmarkedShotsFromRepository(event:CustomEvent):void{
+				currentState="completeState";
+				if(newerButton)newerButton.enabled = false;
+				if(olderButton)olderButton.enabled = false;
 				trace("msv onreceipt from repo");
 				var idList:Array = event.data;
+				_title = "Bookmarks : "+idList.length.toString();
 				EventCentral.getInstance().addEventListener(CustomEvent.IMAGE_LIST_READY,onImageListReady);
 				_imageListService.execute(idList);
 			}
 			
 			private function onImageListReady(event:CustomEvent):void{
+				//EventCentral.getInstance().removeEventListener(CustomEvent.IMAGE_LIST_READY,onImageListReady);
 				trace("msv onImagelistready");
 				_shotVOs = _imageListService.getImageList();
+				
+				
 			}
 			
 			private function serviceCall():void{
+				
 				_serviceRequestParams = new Object();
 				_serviceRequestParams.per_page = _shotsPerPage;
 				_serviceRequestParams.page = _pageNumber;
@@ -190,6 +210,7 @@
 			}
 			
 			private function serviceResultHandler(event:ResultEvent):void{
+				currentState="completeState";
 				_shotVOs.removeAll();
 				
 				var obj:Object = JSON.decode(service.lastResult.toString());
@@ -212,7 +233,7 @@
 				}
 				
 				
-		
+				
 			}
 			
 			private function serviceFaultHandler(event:Event):void{
@@ -245,16 +266,21 @@
 	</fx:Script>
 	
 	<s:layout>
-		 <s:VerticalLayout id="layout" horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
-	 </s:layout>
+		<s:VerticalLayout id="layout" horizontalAlign="center" 
+						  verticalAlign="middle" paddingLeft.completeState="10" 
+						  paddingRight.completeState="10"
+						  />
+	</s:layout>
 	
-	<s:Group id="headerContainer"/>
+	<s:BusyIndicator scaleX="3" scaleY="3" includeIn="loadingState"/>
+	
+	<s:Group id="headerContainer" visible.loadingState="false" visible.completeState="true"/>
 	
 	<s:List id="listDisplay" contentBackgroundAlpha="0"
 			itemRenderer="itemRenderers.ShotItemRenderer" 
 			width="100%" height="100%" 
 			dataProvider="{_shotVOs}"
-			
+			includeIn="completeState"
 			>
 		
 		<s:layout>
@@ -262,10 +288,10 @@
 		</s:layout>
 	</s:List>
 	
-	<s:HGroup width="{_pageChangeGroupWidth}" gap="0" left="0" right="0" bottom="0">
+	<s:HGroup includeIn="completeState" width="{_pageChangeGroupWidth}" gap="0" left="0" right="0" bottom="0">
 		<s:Button id="newerButton" label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
 		<s:Button id="olderButton" width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
 	</s:HGroup>
-		
+	
 	
 </s:View>

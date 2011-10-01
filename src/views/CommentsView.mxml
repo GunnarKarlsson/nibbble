@@ -174,14 +174,15 @@
 	
 	<s:SkinnableContainer  width="{_screenWidth}" skinClass="skins.WhiteGradientBoxSkin">
 		
-	<s:HGroup paddingBottom="10" paddingLeft="10" paddingRight="0" paddingTop="10" width="90%">
+	<s:HGroup paddingBottom="10" paddingLeft="10" right="10" paddingTop="10" width="90%">
 	
 		<s:Image source ="{data.teaserImage}" scaleX="0.5" scaleY="0.5"/>
 		
 		<s:TextArea text="{data.commentsCount} comments on {data.title} by {data.player.username}" 
 					width="90%"
-					paddingTop="15" paddingLeft="10" paddingBottom="10" paddingRight="10"
+					paddingTop="15" paddingLeft="10" paddingBottom="10" paddingRight="20"
 					selectable="false" editable="false" contentBackgroundAlpha="0"
+					lineBreak="toFit"
 					borderVisible="false"
 					color="#444444"
 					fontSize="16"/>
