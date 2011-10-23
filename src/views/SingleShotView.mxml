@@ -34,6 +34,8 @@
 		<![CDATA[
 			import adobe.utils.CustomActions;
 			
+			import com.squidzoo.ImageUtils;
+			
 			import components.AlertPopUp;
 			import components.MenuPopUp;
 			
@@ -80,6 +82,9 @@
 			[Bindable]
 			private var _title:String;
 			
+			//2011 Oct 23
+			[Bindable]private var _image:Bitmap;
+			
 			private function onClickMenuIcon(event:MouseEvent=null):void{
 				var alert:AlertPopUp = new AlertPopUp();
 				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
@@ -104,9 +109,12 @@
 					_title = truncate(data.title);
 
 				}
+				
+				//changeImageSize(data.image);
+				displayedImage.source = data.image;
 				trace("ssv w: "+_screenWidth);
 				
-				bi.visible = true;
+				//bi.visible = true;
 				
 				currentState = "notBookmarked"
 				
@@ -115,6 +123,20 @@
 				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_NEW_SHOT_BOOKMARK_CREATED,onConfirmationNewShotBookmarkCreated);
 				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.IS_SHOT_BOOKMARKED_QUERY,data.id));	
 			}
+			/*
+			private function changeImageSize(img:Bitmap):void{
+				var image:Bitmap = img;
+				if(image.width > image.height){
+					image = ImageUtils.scaleToTargetWidth(image,400);
+				}else{
+					image = ImageUtils.scaleToTargetHeight(image,300);
+				}
+				
+				image = ImageUtils.addBorder(image,10,0xffffff);
+				
+				displayedImage.source = image;
+			}
+			*/
 			
 			private function truncate(str:String):String{
 				if(str.length > 25){
@@ -180,7 +202,7 @@
 			}
 			
 			private function rendering():void{
-				bi.visible = false;
+				//bi.visible = false;
 			}
 			
 		]]>
@@ -188,26 +210,27 @@
 	
 
 		
-	<s:VGroup top="20" width="{_screenWidth}" horizontalAlign="center">
+	<s:VGroup top="20" width="100%" height="100%" horizontalCenter="0" verticalCenter="0" verticalAlign="middle" horizontalAlign="center">
 			
-		<s:SkinnableContainer id="imageContainer" skinClass="skins.SingleShotImageSkin"
+		<!--<s:SkinnableContainer id="imageContainer" skinClass="skins.SingleShotImageSkin"
 							  minWidth="400" minHeight="300"
 								  width="{data.image.width +_offset}" 
 								  height="{data.image.height + _offset}">
 				<s:layout>
 					<s:VerticalLayout horizontalAlign="center" paddingLeft="{_offset/2}" paddingTop="{_offset/2}"/>
-				</s:layout>
-				<s:Image id="teaserImage" source="{data.image}" render="rendering()"/>
+				</s:layout>-->
+			
+				<s:Image id="displayedImage"/>
 				
-				<s:BusyIndicator id="bi" x="50" y="50" scaleX="0.5" scaleY="0.5"/>
+				<!--<s:BusyIndicator id="bi" x="50" y="50" scaleX="0.5" scaleY="0.5"/>-->
 
-		</s:SkinnableContainer>
+		<!--</s:SkinnableContainer>-->
 	
 		
 		<!--~~~~~~~~~~~speech bubble with details~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 		
 		<s:SkinnableContainer id="detailsContainer" skinClass="skins.SingleShotDetailsSkin"
-							  width="100%" height="400" >
+							  width="90%" height="300" >
 			<s:VGroup id="speechBubbleContents" top="0" gap="50">
 				<s:VGroup>
 					<s:Label text="{_title}" color="#eeeeee"/>

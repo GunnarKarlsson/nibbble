@@ -9,7 +9,8 @@
 	<fx:Declarations>
 		<s:HTTPService id="service" url="{_url}"
 					   result="serviceResultHandler(event)"
-					   request="{_serviceRequestParams}"/>
+					   request="{_serviceRequestParams}"
+					   fault="service_faultHandler(event)"/>
 	</fx:Declarations>
 	
 	<s:navigationContent>
@@ -22,7 +23,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
 			import com.adobe.serialization.json.JSON;
 			
 			import components.AlertPopUp;
@@ -30,7 +30,9 @@
 			
 			import helpers.PlayerVOArrayCollectionPopulator;
 			
+			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
+			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
 			import spark.events.IndexChangeEvent;
@@ -56,6 +58,9 @@
 			
 			[Bindable]
 			private var _pageChangeGroupWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
+			
+			[Bindable]
+			private var _stageWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;
 			
 			private function init():void{
 				
@@ -173,6 +178,11 @@
 					}
 			}
 			
+			protected function service_faultHandler(event:FaultEvent):void
+			{
+				trace("service fault");
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -192,12 +202,12 @@
 		</s:layout>
 	</s:List>
 
-	<s:HGroup width="{_pageChangeGroupWidth}" gap="0" left="0" right="0" bottom="0">
-		<s:Button id="newerButton" label="newer" 
-				  width="100%" click="getNewerPage()" skinClass="components.upButton"/>
-		<s:Button id="olderButton" 
-				  width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
-	</s:HGroup>
+	<s:SkinnableContainer width="{_stageWidth}" skinClass="skins.FooterSkin" horizontalCenter="0">
+		<s:HGroup gap="0" bottom="0" width="100%" horizontalAlign="center">			
+			<s:Button id="newerButton" label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
+			<s:Button id="olderButton" width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
+		</s:HGroup>
+	</s:SkinnableContainer>
 
 	
 </s:View>

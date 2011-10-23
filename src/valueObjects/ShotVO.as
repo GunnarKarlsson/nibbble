@@ -1,8 +1,10 @@
 package valueObjects
 {
 	
-	import flash.display.Loader;
+	import com.squidzoo.ImageUtils;
+	
 	import flash.display.Bitmap;
+	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.net.URLRequest;
 	
@@ -58,7 +60,21 @@ package valueObjects
 		}
 		
 		private function assignImage(event:Event):void{
-			image = event.currentTarget.content as Bitmap;
+			var img:Bitmap = event.currentTarget.content as Bitmap;
+			image = changeImageSize(img);
+		}
+		
+		private function changeImageSize(img:Bitmap):Bitmap{
+			var image:Bitmap = img;
+			if(image.width > image.height){
+				image = ImageUtils.scaleToTargetWidth(image,400);
+			}else{
+				image = ImageUtils.scaleToTargetHeight(image,300);
+			}
+			
+			image = ImageUtils.addBorder(image,10,0xffffff);
+			
+			return image;
 		}
 	}
 }

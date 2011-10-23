@@ -83,7 +83,7 @@
 			private var _imageListService:ImageListService = new ImageListService();
 			
 			[Bindable]
-			private var _pageChangeGroupWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;
+			private var _stageWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;
 			
 			[Bindable]
 			private var _playerHeader:PlayerHeader = new PlayerHeader();
@@ -275,7 +275,7 @@
 	
 	<s:BusyIndicator scaleX="3" scaleY="3" includeIn="loadingState"/>
 	
-	<s:Group id="headerContainer" visible.loadingState="false" visible.completeState="true"/>
+	<s:Group id="headerContainer" visible.loadingState="false" visible.completeState="true" width="{_stageWidth}"/>
 	
 	<s:List id="listDisplay" contentBackgroundAlpha="0"
 			itemRenderer="itemRenderers.ShotItemRenderer" 
@@ -285,14 +285,16 @@
 			>
 		
 		<s:layout>
-			<s:TileLayout verticalGap="20" paddingLeft="5" paddingRight="5" paddingTop="10" columnAlign="justifyUsingWidth"/>
+			<s:TileLayout verticalGap="20" paddingLeft="5" paddingRight="5" paddingTop="10" columnAlign="justifyUsingWidth" horizontalAlign="center"/>
 		</s:layout>
 	</s:List>
 	
-	<s:HGroup includeIn="completeState" width="{_pageChangeGroupWidth}" gap="0" left="0" right="0" bottom="0">
-		<s:Button id="newerButton" label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
-		<s:Button id="olderButton" width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
-	</s:HGroup>
-	
+
+	<s:SkinnableContainer includeIn="completeState" width="{_stageWidth}" skinClass="skins.FooterSkin" horizontalCenter="0">
+		<s:HGroup gap="0" bottom="0" width="100%" horizontalAlign="center">			
+			<s:Button id="newerButton" label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
+			<s:Button id="olderButton" width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
+		</s:HGroup>
+	</s:SkinnableContainer>
 	
 </s:View>

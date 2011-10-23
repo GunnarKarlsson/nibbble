@@ -67,7 +67,10 @@
 			private var _pageChangeGroupWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;
 			
 			[Bindable]
-			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth
+			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
+				
+			[Bindable]
+			private var _stageWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;	
 			
 			private function onClickMenuIcon(event:MouseEvent=null):void{
 				var alert:AlertPopUp = new AlertPopUp();
@@ -194,11 +197,11 @@
 			itemRenderer="itemRenderers.CommentItemRenderer" width="100%" height="100%" dataProvider="{_commentVOs}">
 	</s:List>
 	
-	<s:HGroup id="pageChangeButtons" width="{_pageChangeGroupWidth}" gap="0" left="0" right="0" bottom="0">
-		<s:Button id="newerButton" label="newer" width="100%" 
-				  click="getNewerPage()" skinClass="components.upButton" enabled="false"/>
-		<s:Button id="olderButton" width="100%" height="49" label="older" 
-				  click="getOlderPage()" skinClass="components.downButtonSkin"/>
-	</s:HGroup>
+	<s:SkinnableContainer width="{_stageWidth}" skinClass="skins.FooterSkin" horizontalCenter="0">
+		<s:HGroup gap="0" bottom="0" width="100%" horizontalAlign="center">			
+			<s:Button id="newerButton" label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
+			<s:Button id="olderButton" width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
+		</s:HGroup>
+	</s:SkinnableContainer>
 	
 </s:View>

@@ -68,6 +68,6 @@
 	<s:Label x="124" y="221" width="244" fontSize="16"
 			 text="Copyright 2011 Gunnar Karlsson. All rights reserved" textAlign="center"
 			 verticalAlign="top" color="#ffffff"/>
-	<s:Label id="versionNumber" text="version 1.10" color="#777777"/>
+	<s:Label id="versionNumber" text="version 1.12" color="#777777"/>
 	
 </s:View>

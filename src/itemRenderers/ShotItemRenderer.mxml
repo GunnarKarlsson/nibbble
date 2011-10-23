@@ -52,12 +52,12 @@
 		
 		private function onTeaserImageClick():void{
 			trace("teaserimage click");
-			FlexGlobals.topLevelApplication.viewNavigator..pushView(SingleShotView, _data);
+			FlexGlobals.topLevelApplication.viewNavigator.pushView(SingleShotView, _data);
 		}
 		
 		private function onAvatarImageClick():void{
 			_data.player.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
-			FlexGlobals.topLevelApplication.viewNavigator..pushView(MultipleShotsView, _data.player);
+			FlexGlobals.topLevelApplication.viewNavigator.pushView(MultipleShotsView, _data.player);
 		}
 		
 	]]>

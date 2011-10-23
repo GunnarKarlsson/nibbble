@@ -13,10 +13,10 @@
 	</s:states>
 	
 	<s:Path 
-		data="M 40 0
-			L 70 40
-			L 40 40 
-			L 40 0" >
+		data="M 200 0
+			L 230 40
+			L 200 40 
+			L 200 0" >
 		<s:fill>
 			<s:LinearGradient>
 				<s:GradientEntry color="#aaaaaa"/>
