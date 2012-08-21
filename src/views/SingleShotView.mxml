@@ -1,75 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:comp="components.*"
 		viewActivate="viewActivateHandler()"
-		tabBarVisible="false" >
-	
+		tabBarVisible="false">
+
 	<fx:Declarations>
-		<s:DropShadowFilter id="dropShaText" distance="1" angle="90" blurX="0" blurY="0" alpha="1" color="0xffffff" />
+		<s:DropShadowFilter id="dropShaText"
+							distance="1"
+							angle="90"
+							blurX="0"
+							blurY="0"
+							alpha="1"
+							color="0xffffff"/>
 	</fx:Declarations>
-		
+
 	<s:states>
 		<s:State name="notBookmarked"/>
 		<s:State name="bookmarked"/>
 	</s:states>
-	
-	<!--original files all white:-->
-	<!--DribbbleClientBookMarkIcon.png-->
-	<!--DribbbleClientBookMarkIconPink.png-->
-	
+
 	<s:actionContent>
-		<s:Button icon.notBookmarked=	"@Embed(source='assets/icons/dribbbleIcons/star40x40ai3.png')" 
-				  icon.bookmarked=		"@Embed(source='assets/icons/dribbbleIcons/pinkStar40x40ai3.png')" 
+		<s:Button icon.notBookmarked="@Embed(source='assets/icons/dribbbleIcons/star40x40ai3.png')"
+				  icon.bookmarked="@Embed(source='assets/icons/dribbbleIcons/pinkStar40x40ai3.png')"
 				  click="onBookmarkClick(event)"/>
-		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="popup.show()"/>
+		<s:Button id="menuButton"
+				  icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')"
+				  click="popup.show()"/>
 	</s:actionContent>
-	
+
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="popup.show()"/>
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')"
+				  click="popup.show()"/>
 	</s:navigationContent>
-	
+
 
 	<fx:Script>
 		<![CDATA[
 			import adobe.utils.CustomActions;
-			
+
 			import com.squidzoo.ImageUtils;
-			
+
 			import components.AlertPopUp;
 			import components.MenuPopUp;
-			
+
 			import eventSystem.EventCentral;
 			import eventSystem.events.CustomEvent;
-			
+
 			import flash.sensors.Accelerometer;
-			
+
 			import mx.core.FlexGlobals;
 			import mx.events.ResizeEvent;
-			
+
 			import spark.components.SkinnablePopUpContainer;
 			import spark.events.PopUpEvent;
 			import spark.events.ViewNavigatorEvent;
-			
+
 			import utils.BookmarkRepository;
-			
+
 			import valueObjects.PlayerVO;
-			
+
 			private var popup:MenuPopUp;
-			
-			//needs to be a field to dispatch update events
-			private var meter:Accelerometer = new Accelerometer();
-			
+
+			private var meter:Accelerometer=new Accelerometer();
+
 			private var _isBookmarked:Boolean;
-			
+
 			[Bindable]
-			private var _offset:int = 20;
-			
+			private var _offset:int=20;
+
 			[Bindable]
-			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
-			
-			[Bindable]	
-			private var _commentsLabel:String;	
+			private var _screenWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth;
+
+			[Bindable]
+			private var _commentsLabel:String;
 			[Bindable]
 			private var _viewCountLabel:String;
 			[Bindable]
@@ -77,213 +100,243 @@
 			[Bindable]
 			private var _buttonWidth:int;
 			[Bindable]
-			private var _detailsWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
-			
+			private var _detailsWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth;
+
 			[Bindable]
 			private var _title:String;
-			
-			//2011 Oct 23
-			[Bindable]private var _image:Bitmap;
-			
-			private function onClickMenuIcon(event:MouseEvent=null):void{
-				var alert:AlertPopUp = new AlertPopUp();
+
+			[Bindable]
+			private var _image:Bitmap;
+
+			public var _targetWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth * 0.9;
+
+			private function onClickMenuIcon(event:MouseEvent=null):void
+			{
+				var alert:AlertPopUp=new AlertPopUp();
 				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
 				alert.show("message");
 			}
-			
-			private function onCloseAlert(event:Event):void{
+
+			private function onCloseAlert(event:Event):void
+			{
 				trace("this closes Alert");
 			}
-			
-			private function viewActivateHandler():void{
-				
-				popup = new MenuPopUp();
-				
-				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
-				
-				_buttonWidth=FlexGlobals.topLevelApplication.stage.stageWidth/2;
-				if(data){
-					_commentsLabel = "comment"+(data.commentsCount>1?'s':' ');
-					_viewCountLabel = data.viewsCount;// +" view"+(data.viewsCount>1?'s':' ');
-					_likeCountLabel = data.likesCount;//+" likes";
-					_title = truncate(data.title);
+
+			private function viewActivateHandler():void
+			{
+
+				popup=new MenuPopUp();
+
+				addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+
+				_buttonWidth=FlexGlobals.topLevelApplication.stage.stageWidth / 2;
+				if (data)
+				{
+					_commentsLabel="comment" + (data.commentsCount > 1 ? 's' : ' ');
+					_viewCountLabel=data.viewsCount;
+					_likeCountLabel=data.likesCount;
+					_title=truncate(data.title);
 
 				}
-				
-				//changeImageSize(data.image);
-				displayedImage.source = data.image;
-				trace("ssv w: "+_screenWidth);
-				
-				//bi.visible = true;
-				
-				currentState = "notBookmarked"
-				
-				EventCentral.getInstance().addEventListener(CustomEvent.IS_SHOT_BOOKMARKED_RESPONSE,onIsShotBookmarkedResponse);
-				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_SHOT_BOOKMARK_REMOVED,onConfirmationShotBookmarkRemoved);
-				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_NEW_SHOT_BOOKMARK_CREATED,onConfirmationNewShotBookmarkCreated);
-				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.IS_SHOT_BOOKMARKED_QUERY,data.id));	
+
+				var tempImage:Bitmap=data.image;
+				displayedImage.source=changeImageSize(tempImage);
+
+				currentState="notBookmarked"
+
+				EventCentral.getInstance().addEventListener(CustomEvent.IS_SHOT_BOOKMARKED_RESPONSE, onIsShotBookmarkedResponse);
+				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_SHOT_BOOKMARK_REMOVED, onConfirmationShotBookmarkRemoved);
+				EventCentral.getInstance().addEventListener(CustomEvent.CONFIRMATION_NEW_SHOT_BOOKMARK_CREATED, onConfirmationNewShotBookmarkCreated);
+				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.IS_SHOT_BOOKMARKED_QUERY, data.id));
 			}
-			/*
-			private function changeImageSize(img:Bitmap):void{
-				var image:Bitmap = img;
-				if(image.width > image.height){
-					image = ImageUtils.scaleToTargetWidth(image,400);
-				}else{
-					image = ImageUtils.scaleToTargetHeight(image,300);
+
+			private function changeImageSize(img:Bitmap):Bitmap
+			{
+				var image:Bitmap=img;
+				if (image.width > image.height)
+				{
+					image=ImageUtils.scaleToTargetWidth(image, _targetWidth);
 				}
-				
-				image = ImageUtils.addBorder(image,10,0xffffff);
-				
-				displayedImage.source = image;
+				else
+				{
+					image=ImageUtils.scaleToTargetHeight(image, 300);
+				}
+
+				image=ImageUtils.addBorder(image, 10, 0xffffff);
+
+				return image;
 			}
-			*/
-			
-			private function truncate(str:String):String{
-				if(str.length > 25){
-					str = str.slice(0,25);
-					str += "...";
+
+			private function truncate(str:String):String
+			{
+				if (str.length > 25)
+				{
+					str=str.slice(0, 25);
+					str+="...";
 				}
 				return str;
 			}
-			
-			private function onKeyDown(event:KeyboardEvent):void{
-				if(event.keyCode == Keyboard.MENU){
+
+			private function onKeyDown(event:KeyboardEvent):void
+			{
+				if (event.keyCode == Keyboard.MENU)
+				{
 					event.preventDefault();
-					trace("\nMenu Pressed\n");
 					popup.show();
 				}
 			}
-			
-			private function onBookmarkClick(event:MouseEvent):void{
-				if(currentState == "bookmarked"){
-					EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_TO_REMOVE_SHOT_BOOKMARK,data.id));
-				}else{
-					EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.NEW_SHOT_BOOKMARK,data.id));
+
+			private function onBookmarkClick(event:MouseEvent):void
+			{
+				if (currentState == "bookmarked")
+				{
+					EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_TO_REMOVE_SHOT_BOOKMARK, data.id));
+				}
+				else
+				{
+					EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.NEW_SHOT_BOOKMARK, data.id));
 				}
 			}
-			
-			private function onConfirmationNewShotBookmarkCreated(event:CustomEvent):void{
-				trace("onConfirmationNewShotBookmarkCreated");
-				if(event.id == data.id){
+
+			private function onConfirmationNewShotBookmarkCreated(event:CustomEvent):void
+			{
+				if (event.id == data.id)
+				{
 					currentState="bookmarked";
 				}
 			}
-			
-			private function onConfirmationShotBookmarkRemoved(event:CustomEvent):void{
-				trace("onConfirmationShotBookmarkRemoved");
-				if(event.id == data.id){
+
+			private function onConfirmationShotBookmarkRemoved(event:CustomEvent):void
+			{
+				if (event.id == data.id)
+				{
 					currentState="notBookmarked";
 				}
 			}
-			
-			private function onIsShotBookmarkedResponse(event:CustomEvent):void{
-				trace("ssv onIsShotBookmarked");
-				trace(event.id, data.id);
-				trace(event.isBookmarked,"true");
-				
-				if(event.id == data.id && event.isBookmarked == true){
+
+			private function onIsShotBookmarkedResponse(event:CustomEvent):void
+			{
+				if (event.id == data.id && event.isBookmarked == true)
+				{
 					currentState="bookmarked";
-					
+
 				}
 			}
-			
-			private function onClickPlayer(event:Event):void{
+
+			private function onClickPlayer(event:Event):void
+			{
 				data.player.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
 				navigator.pushView(views.MultipleShotsView, data.player);
 			}
-			
-			private function onInactiveBookmarkClick(event:Event):void{
-				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.NEW_SHOT_BOOKMARK,data.id));
+
+			private function onInactiveBookmarkClick(event:Event):void
+			{
+				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.NEW_SHOT_BOOKMARK, data.id));
 			}
-			
-			private function onActiveBookmarkClick(event:Event):void{	
-				trace("onActiveBookmarkClicked()")
-				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_TO_REMOVE_SHOT_BOOKMARK,data.id));
+
+			private function onActiveBookmarkClick(event:Event):void
+			{
+				EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.REQUEST_TO_REMOVE_SHOT_BOOKMARK, data.id));
 			}
-			
-			private function rendering():void{
+
+			private function rendering():void
+			{
 				//bi.visible = false;
 			}
-			
 		]]>
 	</fx:Script>
-	
 
-		
-	<s:VGroup top="20" width="100%" height="100%" horizontalCenter="0" verticalCenter="0" verticalAlign="middle" horizontalAlign="center">
-			
-		<!--<s:SkinnableContainer id="imageContainer" skinClass="skins.SingleShotImageSkin"
-							  minWidth="400" minHeight="300"
-								  width="{data.image.width +_offset}" 
-								  height="{data.image.height + _offset}">
-				<s:layout>
-					<s:VerticalLayout horizontalAlign="center" paddingLeft="{_offset/2}" paddingTop="{_offset/2}"/>
-				</s:layout>-->
-			
-				<s:Image id="displayedImage"/>
-				
-				<!--<s:BusyIndicator id="bi" x="50" y="50" scaleX="0.5" scaleY="0.5"/>-->
 
-		<!--</s:SkinnableContainer>-->
-	
-		
+
+	<s:VGroup top="20"
+			  width="100%"
+			  height="100%"
+			  horizontalCenter="0"
+			  verticalCenter="0"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+
+		<s:Image id="displayedImage"/>
+
+
+
 		<!--~~~~~~~~~~~speech bubble with details~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-		
-		<s:SkinnableContainer id="detailsContainer" skinClass="skins.SingleShotDetailsSkin"
-							  width="90%" height="300" >
-			<s:VGroup id="speechBubbleContents" top="0" gap="50">
+
+		<s:SkinnableContainer id="detailsContainer"
+							  skinClass="skins.SingleShotDetailsSkin"
+							  width="90%"
+							  height="300">
+			<s:VGroup id="speechBubbleContents"
+					  top="0"
+					  gap="50">
 				<s:VGroup>
-					<s:Label text="{_title}" color="#eeeeee"/>
+					<s:Label text="{_title}"
+							 color="#eeeeee"/>
 					<s:HGroup gap="15">
 						<s:HGroup verticalAlign="middle">
 							<s:Image source="@Embed(source='assets/icons/dribbbleIcons/smallViews.png')"/>
-							<s:Label text="{_viewCountLabel}" fontSize="16"/>
+							<s:Label text="{_viewCountLabel}"
+									 fontSize="16"/>
 						</s:HGroup>
 						<s:HGroup verticalAlign="middle">
 							<s:Image source="@Embed(source='assets/icons/dribbbleIcons/smallLikes.png')"/>
-							<s:Label text="{_likeCountLabel}" fontSize="16" />
+							<s:Label text="{_likeCountLabel}"
+									 fontSize="16"/>
 						</s:HGroup>
 					</s:HGroup>
 				</s:VGroup>
-				
-				
-				<s:HGroup id="nameImageComments" width="100%" gap="50">
-					
+
+
+				<s:HGroup id="nameImageComments"
+						  width="100%"
+						  gap="50">
+
 					<s:VGroup id="layerImageNameAndMoreButton">
 						<s:HGroup id="playerImageAndMoreButton">
-							
-							
-							<s:SkinnableContainer width="100" height="100" skinClass="skins.WhiteGradientBoxWithDropShadowSkin" 
+
+
+							<s:SkinnableContainer width="100"
+												  height="100"
+												  skinClass="skins.WhiteGradientBoxWithDropShadowSkin"
 												  click="onClickPlayer(event)">
 								<s:layout>
-									<s:VerticalLayout verticalAlign="middle" horizontalAlign="center" paddingLeft="10" paddingTop="10"/>
+									<s:VerticalLayout verticalAlign="middle"
+													  horizontalAlign="center"
+													  paddingLeft="10"
+													  paddingTop="10"/>
 								</s:layout>
 								<s:Image source="{data.player.avatarImage}"/>
-							
-							</s:SkinnableContainer>	
-						</s:HGroup>	 
-						<s:Label text="{data.player.username}" fontSize="16"/>	
-					</s:VGroup>
-					
-					<s:VGroup>
-						<s:HGroup>
-							<s:SkinnableContainer width="100" skinClass="skins.CommentsIconShapeSkin"
-												  click="navigator.pushView(views.CommentsView, data)">
-								<s:layout>
-									<s:VerticalLayout verticalAlign="middle" horizontalAlign="center" paddingLeft="3" paddingTop="20"/>
-								</s:layout>
-								<s:Label text="{data.commentsCount}" fontSize="30"/>
-								<s:Label text="{_commentsLabel}" fontSize="16"/>
+
 							</s:SkinnableContainer>
 						</s:HGroup>
-						
+						<s:Label text="{data.player.username}"
+								 fontSize="16"/>
+					</s:VGroup>
+
+					<s:VGroup>
+						<s:HGroup>
+							<s:SkinnableContainer width="100"
+												  skinClass="skins.CommentsIconShapeSkin"
+												  click="navigator.pushView(views.CommentsView, data)">
+								<s:layout>
+									<s:VerticalLayout verticalAlign="middle"
+													  horizontalAlign="center"
+													  paddingLeft="3"
+													  paddingTop="20"/>
+								</s:layout>
+								<s:Label text="{data.commentsCount}"
+										 fontSize="30"/>
+								<s:Label text="{_commentsLabel}"
+										 fontSize="16"/>
+							</s:SkinnableContainer>
+						</s:HGroup>
+
 					</s:VGroup>
 				</s:HGroup>
-			
+
 			</s:VGroup>
-			
+
 		</s:SkinnableContainer>
-		
+
 	</s:VGroup>
 </s:View>
-			

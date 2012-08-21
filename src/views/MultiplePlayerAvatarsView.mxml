@@ -1,213 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" 
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:itemRenderers="itemRenderers.*"
 		tabBarVisible="false"
-		viewActivate="init()" 
+		viewActivate="init()"
 		destructionPolicy="never">
-	
+
 	<fx:Declarations>
-		<s:HTTPService id="service" url="{_url}"
+		<s:HTTPService id="service"
+					   url="{_url}"
 					   result="serviceResultHandler(event)"
 					   request="{_serviceRequestParams}"
 					   fault="service_faultHandler(event)"/>
 	</fx:Declarations>
-	
+
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="popup.show()"/>	
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')"
+				  click="popup.show()"/>
 	</s:navigationContent>
-	
+
 	<s:actionContent>
-		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="popup.show()"/>
-	</s:actionContent>	
-	
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')"
+				  click="popup.show()"/>
+	</s:actionContent>
+
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
-			
+
 			import components.AlertPopUp;
 			import components.MenuPopUp;
-			
+
 			import helpers.PlayerVOArrayCollectionPopulator;
-			
+
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
-			
+
 			import spark.events.IndexChangeEvent;
 			import spark.events.PopUpEvent;
-			
+
 			import valueObjects.PlayerVO;
-			
+
 			private var popup:MenuPopUp;
-			
-			private var _pageNumber:int = 1;
-			
-			private var _shotsPerPage:int = 15;
-			private var _perPage:int = 15;
-			
+
+			private var _pageNumber:int=1;
+
+			private var _shotsPerPage:int=15;
+			private var _perPage:int=15;
+
 			[Bindable]
 			private var _serviceRequestParams:Object;
-			
+
 			[Bindable]
 			private var _url:String;
-			
+
 			[Bindable]
-			private var _playerVOs:ArrayCollection = new ArrayCollection();
-			
+			private var _playerVOs:ArrayCollection=new ArrayCollection();
+
 			[Bindable]
-			private var _pageChangeGroupWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
-			
+			private var _pageChangeGroupWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth;
+
 			[Bindable]
-			private var _stageWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;
-			
-			private function init():void{
-				
-				popup = new MenuPopUp();
-				
-				trace("mpvs init "+data.getViewType());
-				
-				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
-				
+			private var _stageWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth;
+
+			private function init():void
+			{
+
+				popup=new MenuPopUp();
+
+				addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+
 				callService();
 			}
-			
-			private function onKeyDown(event:KeyboardEvent):void{
-				if(event.keyCode == Keyboard.MENU){
+
+			private function onKeyDown(event:KeyboardEvent):void
+			{
+				if (event.keyCode == Keyboard.MENU)
+				{
 					event.preventDefault();
-					trace("\nMenu Pressed\n");
 					popup.show();
 				}
 			}
 
-			private function callService():void{	
-				
-				_serviceRequestParams = new Object();
-				_serviceRequestParams.per_page = _shotsPerPage;
-				_serviceRequestParams.page = _pageNumber;
-				
-				switch(data.getViewType()){
-					
-					/*
-					case PlayerVO.LIKES :
-						trace("send() for likes");
-						_url = "http://api.dribbble.com/players/"+data.id+"/likes";
+			private function callService():void
+			{
+
+				_serviceRequestParams=new Object();
+				_serviceRequestParams.per_page=_shotsPerPage;
+				_serviceRequestParams.page=_pageNumber;
+
+				switch (data.getViewType())
+				{
+
+					case PlayerVO.FOLLOWERS:
+						_url="http://api.dribbble.com/players/" + data.id + "/followers";
 						service.send();
 						break;
-					*/
-					
-					case PlayerVO.FOLLOWERS :
-						trace("send() for following");
-						_url = "http://api.dribbble.com/players/"+data.id+"/followers";
+
+					case PlayerVO.FOLLOWING:
+						_url="http://api.dribbble.com/players/" + data.id + "/following";
 						service.send();
-						break;
-					
-					case PlayerVO.FOLLOWING :
-						trace("send() for following");
-						_url = "http://api.dribbble.com/players/"+data.id+"/following";
-						service.send();
-						break;
-					
-					default :
-						trace("switch default");
 						break;
 				}
-				
-				
+
+
 			}
-			
-			private function serviceResultHandler(event:ResultEvent):void{
+
+			private function serviceResultHandler(event:ResultEvent):void
+			{
 				_playerVOs.removeAll();
-				var obj:Object = JSON.decode(service.lastResult.toString());
-				trace("mpv serviceResultHandler");
-				_playerVOs = PlayerVOArrayCollectionPopulator.execute(obj);				
-				
+				var obj:Object=JSON.decode(service.lastResult.toString());
+				_playerVOs=PlayerVOArrayCollectionPopulator.execute(obj);
+
 				setNewerAndOlderButtons();
 			}
-			
-			
-			private function setNewerAndOlderButtons():void{
-				
-				if(_pageNumber>1){
-					newerButton.enabled = true;
-				}else{
-					newerButton.enabled = false;	
+
+
+			private function setNewerAndOlderButtons():void
+			{
+
+				if (_pageNumber > 1)
+				{
+					newerButton.enabled=true;
 				}
-				
-				if(((_pageNumber * _perPage)) >= data.commentsCount){
-					olderButton.enabled = false;
-				}else{
-					olderButton.enabled = true;
+				else
+				{
+					newerButton.enabled=false;
 				}
-				
+
+				if (((_pageNumber * _perPage)) >= data.commentsCount)
+				{
+					olderButton.enabled=false;
+				}
+				else
+				{
+					olderButton.enabled=true;
+				}
+
 			}
-			
-			private function onClickMenuIcon(event:MouseEvent=null):void{
-				var alert:AlertPopUp = new AlertPopUp();
+
+			private function onClickMenuIcon(event:MouseEvent=null):void
+			{
+				var alert:AlertPopUp=new AlertPopUp();
 				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
 				alert.show("message");
 			}
-			
-			private function onCloseAlert(event:Event):void{
-				trace("this closes Alert");
+
+			private function onCloseAlert(event:Event):void
+			{
+				trace("onCloseAlert()");
 			}
-			
-			private function listChangeHandler(event:IndexChangeEvent):void{
-				if(listDisplay!=null){
-					if(listDisplay.selectedItem!=null){
-						var playerVO:PlayerVO = listDisplay.dataProvider.getItemAt(event.newIndex) as PlayerVO;
+
+			private function listChangeHandler(event:IndexChangeEvent):void
+			{
+				if (listDisplay != null)
+				{
+					if (listDisplay.selectedItem != null)
+					{
+						var playerVO:PlayerVO=listDisplay.dataProvider.getItemAt(event.newIndex) as PlayerVO;
 						playerVO.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
-						navigator.pushView(MultipleShotsView, playerVO);			
+						navigator.pushView(MultipleShotsView, playerVO);
 					}
 				}
-			}	
-			
-			
-			private function getOlderPage():void{
-					if(_playerVOs.length > 0 ){
-						_pageNumber++;
-						callService();
-					}
 			}
-			
-			private function getNewerPage():void{
-					if(_pageNumber > 1){			
-						_pageNumber--;
-						callService();
-					}
+
+
+			private function getOlderPage():void
+			{
+				if (_playerVOs.length > 0)
+				{
+					_pageNumber++;
+					callService();
+				}
 			}
-			
+
+			private function getNewerPage():void
+			{
+				if (_pageNumber > 1)
+				{
+					_pageNumber--;
+					callService();
+				}
+			}
+
 			protected function service_faultHandler(event:FaultEvent):void
 			{
-				trace("service fault");
+				trace("FaultEvent");
 			}
-			
 		]]>
 	</fx:Script>
-	
-	
-	
-	<!--<s:Label text="{data.username}"/>-->
-	
+
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
+		<s:VerticalLayout horizontalAlign="center"
+						  verticalAlign="middle"
+						  paddingLeft="10"
+						  paddingRight="10"/>
 	</s:layout>
-	
-	<s:List id="listDisplay" contentBackgroundAlpha="0"
-			itemRenderer="itemRenderers.PlayerItemRenderer" width="100%" height="100%" 
-			dataProvider="{_playerVOs}" change="listChangeHandler(event)">
+
+	<s:List id="listDisplay"
+			contentBackgroundAlpha="0"
+			itemRenderer="itemRenderers.PlayerItemRenderer"
+			width="100%"
+			height="100%"
+			dataProvider="{_playerVOs}"
+			change="listChangeHandler(event)">
 		<s:layout>
-			<s:TileLayout paddingLeft="5" paddingRight="5" paddingTop="20" paddingBottom="20" columnAlign="justifyUsingGap"/>
+			<s:TileLayout paddingLeft="5"
+						  paddingRight="5"
+						  paddingTop="20"
+						  paddingBottom="20"
+						  columnAlign="justifyUsingGap"/>
 		</s:layout>
 	</s:List>
 
-	<s:SkinnableContainer width="{_stageWidth}" skinClass="skins.FooterSkin" horizontalCenter="0">
-		<s:HGroup gap="0" bottom="0" width="100%" horizontalAlign="center">			
-			<s:Button id="newerButton" label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
-			<s:Button id="olderButton" width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
+	<s:SkinnableContainer width="{_stageWidth}"
+						  skinClass="skins.FooterSkin"
+						  horizontalCenter="0">
+		<s:HGroup gap="0"
+				  bottom="0"
+				  width="100%"
+				  horizontalAlign="center">
+			<s:Button id="newerButton"
+					  label="newer"
+					  width="100%"
+					  click="getNewerPage()"
+					  skinClass="components.upButton"/>
+			<s:Button id="olderButton"
+					  width="100%"
+					  height="49"
+					  label="older"
+					  click="getOlderPage()"
+					  skinClass="components.downButtonSkin"/>
 		</s:HGroup>
 	</s:SkinnableContainer>
 
-	
+
 </s:View>

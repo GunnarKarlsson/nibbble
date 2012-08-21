@@ -1,49 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		tabBarVisible="false"
 		viewActivate="viewActivateHandler()"
 		title="about nibbble">
 
-	
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="popup.show()"/>	
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')"
+				  click="popup.show()"/>
 	</s:navigationContent>
-	
+
 	<s:actionContent>
-		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="popup.show()"/>
+		<s:Button id="menuButton"
+				  icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')"
+				  click="popup.show()"/>
 	</s:actionContent>
-	
+
 	<fx:Script>
 		<![CDATA[
-			
 			import components.MenuPopUp;
-			
+
 			import spark.components.SkinnablePopUpContainer;
-			
+
 			private var popup:MenuPopUp;
-			
+
 			import components.AlertPopUp;
-			
+
 			import spark.events.PopUpEvent;
-			
-			private function viewActivateHandler():void{
-				popup = new MenuPopUp();
-				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
+
+			private function viewActivateHandler():void
+			{
+				popup=new MenuPopUp();
+				addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			}
-			
-			//private function onClickMenuIcon(event:MouseEvent=null):void{
-				//var alert:AlertPopUp = new AlertPopUp();
-				//alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
-				//alert.show("message");
-			//}
-			
-			private function onCloseAlert(event:Event):void{
+
+			private function onCloseAlert(event:Event):void
+			{
 				trace("this closes Alert");
 			}
-			
-			private function onKeyDown(event:KeyboardEvent):void{
-				if(event.keyCode == Keyboard.MENU){
+
+			private function onKeyDown(event:KeyboardEvent):void
+			{
+				if (event.keyCode == Keyboard.MENU)
+				{
 					event.preventDefault();
 					trace("\nMenu Pressed\n");
 					popup.show();
@@ -51,23 +69,22 @@
 			}
 		]]>
 	</fx:Script>
-	
-	<!--<s:SkinnableContainer width="100%" height="50" skinClass="skins.GreyGradientBoxWithDropShadowSkin">
-		<s:HGroup gap="10" left="30" top="5">
-			
-			<s:Image source="@Embed(source='assets/icons/dribbbleIcons/about.png')" />
-			<s:Image source="@Embed(source='assets/icons/dribbbleIcons/aboutText.png')" />
-				
-		</s:HGroup>
-	</s:SkinnableContainer>-->
 
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+		<s:VerticalLayout horizontalAlign="center"
+						  verticalAlign="middle"/>
 	</s:layout>
-	
-	<s:Label x="124" y="221" width="244" fontSize="16"
-			 text="Copyright 2011 Gunnar Karlsson. All rights reserved" textAlign="center"
-			 verticalAlign="top" color="#ffffff"/>
-	<s:Label id="versionNumber" text="version 1.12" color="#777777"/>
-	
+
+	<s:Label x="124"
+			 y="221"
+			 width="244"
+			 fontSize="16"
+			 text="Copyright 2011 Gunnar Karlsson. All rights reserved"
+			 textAlign="center"
+			 verticalAlign="top"
+			 color="#ffffff"/>
+	<s:Label id="versionNumber"
+			 text="version 1.14"
+			 color="#777777"/>
+
 </s:View>

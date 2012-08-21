@@ -1,30 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" xmlns:styles="styles.*">
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:styles="styles.*">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("spark.components.SkinnableContainer")]
 	</fx:Metadata>
-	
+
 	<fx:Declarations>
 		<s:DropShadowFilter id="dropShadowFilter"/>
 		<styles:GraphicElementsLibrary id="graphicsLib"/>
 	</fx:Declarations>
-	
+
 	<!-- states -->
 	<s:states>
-		<s:State name="disabled" />
-		<s:State name="normal" />
+		<s:State name="disabled"/>
+		<s:State name="normal"/>
 	</s:states>
-	
+
 	<s:Path filters="{[graphicsLib.getDropShadowFilter()]}"
-		data="M 0 0
+			data="M 0 0
 		L 100 0
 		L 100 100 
 		L 20 100
 		L 0 120
 		L 0 0
-		" >
+		">
 		<s:fill>
 			<s:LinearGradient>
 				<s:GradientEntry color="#ffffff"/>
@@ -32,10 +52,9 @@
 			</s:LinearGradient>
 		</s:fill>
 	</s:Path>
-	
-	<s:Group id="contentGroup" left="10" right="10"/>
-	
-	<!-- SkinParts
-	name=contentGroup, type=spark.components.Group, required=false
-	-->
+
+	<s:Group id="contentGroup"
+			 left="10"
+			 right="10"/>
+
 </s:Skin>

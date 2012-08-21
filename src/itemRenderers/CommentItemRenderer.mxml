@@ -1,54 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
-				autoDrawBackground="false" contentBackgroundAlpha="0">
-	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		
-	</fx:Declarations>
+				autoDrawBackground="false"
+				contentBackgroundAlpha="0">
 	<fx:Script>
 		<![CDATA[
 			import views.CommentsView;
-			public var forCompiler:CommentItemRenderer;//Required
-			public var forCompilerAlso:CommentsView;//Required
+			public var forCompiler:CommentItemRenderer; //Required
+			public var forCompilerAlso:CommentsView; //Required
 		]]>
 	</fx:Script>
-	
-	<s:Path x="30" y="90" data = "	
+
+	<s:Path x="30"
+			y="90"
+			data="	
 			M 0 0
 			L 20 20
 			L 0 20
-			L 0 0 ">		
+			L 0 0 ">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0xffffff"/>
 				<s:GradientEntry color="0xffffff"/>
 			</s:LinearGradient>
 		</s:fill>
-		
+
 	</s:Path>
 
-	<s:SkinnableContainer x="30" y="30" skinClass="skins.WhiteGradientBoxWithDropShadowSkin" width="60" height="60">
+	<s:SkinnableContainer x="30"
+						  y="30"
+						  skinClass="skins.WhiteGradientBoxWithDropShadowSkin"
+						  width="60"
+						  height="60">
 		<s:layout>
-			<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" paddingLeft="5" paddingTop="5"/>
+			<s:VerticalLayout horizontalAlign="center"
+							  verticalAlign="middle"
+							  paddingLeft="5"
+							  paddingTop="5"/>
 		</s:layout>
-		<s:BitmapImage id="avatarImage" 
-					   width="50" height="50" 
+		<s:BitmapImage id="avatarImage"
+					   width="50"
+					   height="50"
 					   source="{data.player.avatarImage}"/>
 	</s:SkinnableContainer>
-	
-	
-	<s:TextArea 	id="textArea" x="85" y="30" fontSize="12" color="#ffffff" width="100%" height ="60" borderVisible="false" 
-					text="{data.player.username}"
-					editable="false" selectable="false" contentBackgroundAlpha="0" />
-	
-	<s:SkinnableContainer x="20" y="110" width="90%" skinClass="skins.CustomTextAreaSkin">
-		<s:TextArea id="bodyTextArea" x="0" y="0" width="95%" text="{data.body}" fontSize="16"  
-						color="#444444" borderVisible="false" selectable="false" editable="false" alpha="1" contentBackgroundAlpha="0">
+
+
+	<s:TextArea id="textArea"
+				x="85"
+				y="30"
+				fontSize="12"
+				color="#ffffff"
+				width="100%"
+				height="60"
+				borderVisible="false"
+				text="{data.player.username}"
+				editable="false"
+				selectable="false"
+				contentBackgroundAlpha="0"/>
+
+	<s:SkinnableContainer x="20"
+						  y="110"
+						  width="90%"
+						  skinClass="skins.CustomTextAreaSkin">
+		<s:TextArea id="bodyTextArea"
+					x="0"
+					y="0"
+					width="95%"
+					text="{data.body}"
+					fontSize="16"
+					color="#444444"
+					borderVisible="false"
+					selectable="false"
+					editable="false"
+					alpha="1"
+					contentBackgroundAlpha="0">
 			<s:filters>
-				<s:DropShadowFilter id="whiteShadow" distance="1" angle="90" blurX="0" blurY="0" alpha="1" color="0xbbbbbb" />
+				<s:DropShadowFilter id="whiteShadow"
+									distance="1"
+									angle="90"
+									blurX="0"
+									blurY="0"
+									alpha="1"
+									color="0xbbbbbb"/>
 			</s:filters>
-			</s:TextArea>
+		</s:TextArea>
 	</s:SkinnableContainer>
 </s:ItemRenderer>

@@ -1,38 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 						   xmlns:s="library://ns.adobe.com/flex/spark"
-						    x="70" y="300">
-	
+						   x="70"
+						   y="300">
+
 	<fx:Script>
 		<![CDATA[
 			import eventSystem.EventCentral;
 			import eventSystem.events.CustomEvent;
-			
+
 			import spark.components.View;
 			private var activeView:View;
 			import mx.core.FlexGlobals;
-				
-			public function show():void{
-					activeView = FlexGlobals.topLevelApplication.viewNavigator.activeView;
-					
-					this.center();
-					this.open(activeView, true);		
+
+			public function show():void
+			{
+				activeView=FlexGlobals.topLevelApplication.viewNavigator.activeView;
+
+				this.center();
+				this.open(activeView, true);
 			}
-				
-			public function center():void{
-					this.width = 310; //activeView.width * 0.7;
-					this.height = 385; //activeView.height * 0.6;
-					
-					var newX:Number = (activeView.width / 2) - (this.width /2);
-					var newY:Number = (activeView.height / 2) - (this.height/2);
-					
-					this.x = newX;
-					this.y = newY;
+
+			public function center():void
+			{
+				this.width=310; //activeView.width * 0.7;
+				this.height=385; //activeView.height * 0.6;
+
+				var newX:Number=(activeView.width / 2) - (this.width / 2);
+				var newY:Number=(activeView.height / 2) - (this.height / 2);
+
+				this.x=newX;
+				this.y=newY;
 			}
-			
-			private function onClick(event:MouseEvent):void{
-				
-				switch(event.target.id){
+
+			private function onClick(event:MouseEvent):void
+			{
+
+				switch (event.target.id)
+				{
 					case "popular":
 						EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.ACTIONBAR_MENU_ICON_CLICKED_POPULAR_SELECTED));
 						break;
@@ -48,20 +72,40 @@
 					case "about":
 						EventCentral.getInstance().dispatchEvent(new CustomEvent(CustomEvent.ACTION_BAR_MENU_ICON_CLICKED_ABOUT_SELECTED));
 						break;
-			}
-				
+				}
+
 				this.close();
 			}
 		]]>
-	</fx:Script>	
-	
+	</fx:Script>
+
 	<!-- Also uses the MyPopupSkin.mxml class -->
-	<s:VGroup left="4" right="4" top="4" horizontalAlign="right">
-		<s:Button id="popular" label="popular" click="onClick(event)" skinClass="components.popularButtonSkin"/>
-		<s:Button id="debuts" label="Debuts" click="onClick(event)" skinClass="components.debutsButtonSkin2"/>
-		<s:Button id="everyone" label="Everyone" click="onClick(event)" skinClass="components.everyoneButtonSkin"/>
-		<s:Button id="bookmarks" label="Bookmarks" click="onClick(event)" skinClass="components.bookmarksButtonSkin"/>
-		<s:Button id="about" label="About" click="onClick(event)" skinClass="components.aboutButtonSkin"/>
-		<s:Button label="Close" click="this.close()" skinClass="components.closeButtonPolygon"/>
+	<s:VGroup left="4"
+			  right="4"
+			  top="4"
+			  horizontalAlign="right">
+		<s:Button id="popular"
+				  label="popular"
+				  click="onClick(event)"
+				  skinClass="components.popularButtonSkin"/>
+		<s:Button id="debuts"
+				  label="Debuts"
+				  click="onClick(event)"
+				  skinClass="components.debutsButtonSkin2"/>
+		<s:Button id="everyone"
+				  label="Everyone"
+				  click="onClick(event)"
+				  skinClass="components.everyoneButtonSkin"/>
+		<s:Button id="bookmarks"
+				  label="Bookmarks"
+				  click="onClick(event)"
+				  skinClass="components.bookmarksButtonSkin"/>
+		<s:Button id="about"
+				  label="About"
+				  click="onClick(event)"
+				  skinClass="components.aboutButtonSkin"/>
+		<s:Button label="Close"
+				  click="this.close()"
+				  skinClass="components.closeButtonPolygon"/>
 	</s:VGroup>
 </s:SkinnablePopUpContainer>

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:dribbleservice2="services.dribbleservice2.*"
@@ -22,7 +25,7 @@
 	</fx:Declarations>
 	
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="popup.show()"/>	
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="_popup.show()"/>	
 	</s:navigationContent>
 	
 	
@@ -31,7 +34,7 @@
 		<!--original is refresh48x48.png-->
 		<!--<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/refresh-grey-999999.png')" 
 				  click="refreshList()"/>-->
-		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="popup.show()"/>
+		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="_popup.show()"/>
 	</s:actionContent>
 	
 	<fx:Script>
@@ -92,7 +95,7 @@
 			private var _title:String;
 			
 			private var _alert:AlertPopUp = new AlertPopUp();
-			private var popup:MenuPopUp = new MenuPopUp();
+			private var _popup:MenuPopUp = new MenuPopUp();
 			
 			private function refreshList():void{
 				callService();
@@ -100,7 +103,6 @@
 			
 			private function init():void{
 				
-				//popup = new MenuPopUp();
 				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
 				
 				if(_shotVOs.length < 1){ 
@@ -111,8 +113,7 @@
 			private function onKeyDown(event:KeyboardEvent):void{
 				if(event.keyCode == Keyboard.MENU){
 					event.preventDefault();
-					trace("\nMenu Pressed\n");
-					popup.show();
+					_popup.show();
 				}
 			}
 			
@@ -123,15 +124,12 @@
 			}
 			
 			private function onCloseAlert(event:Event):void{
-				trace("this closes Alert");
 				_alert.removeEventListener(PopUpEvent.CLOSE, onCloseAlert);
 			}
 			
 			private function callService():void{
 				
 				currentState="loadingState";
-				
-				trace(data.getViewType());
 				
 				switch(data.getViewType()){
 					case MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW:
@@ -193,9 +191,6 @@
 			}
 			
 			private function onImageListReady(event:CustomEvent):void{
-				//EventCentral.getInstance().removeEventListener(CustomEvent.IMAGE_LIST_READY,onImageListReady);
-				trace("msv onImagelistready");
-				//_shotVOs.removeAll();
 				_shotVOs = _imageListService.getImageList();
 				
 				
@@ -220,7 +215,7 @@
 				trace("obj.total"+obj.total);
 				
 				_shotVOs = ShotVOArrayCollectionPopulator.execute(obj);
-				
+				list.se
 				setNewerAndOlderButtons();
 				
 			}

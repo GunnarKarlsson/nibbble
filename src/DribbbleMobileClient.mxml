@@ -1,117 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TabbedViewNavigatorApplication xmlns:fx=					"http://ns.adobe.com/mxml/2009"
-								  xmlns:s=					"library://ns.adobe.com/flex/spark"
-								
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
+
+<s:TabbedViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+								  xmlns:s="library://ns.adobe.com/flex/spark"
 								  creationComplete="creationCompleteHandler(event)"
 								  splashScreenImage="@Embed('assets/splash/splashScreenLetterpressLogo.png')"
 								  splashScreenMinimumDisplayTime="1000"
-								  splashScreenScaleMode="zoom"
-								  >
-				
-	
+								  splashScreenScaleMode="zoom">
+
+
 	<fx:Style source="styles/DribbbleMobileClient.css">
 	</fx:Style>
-	
+
 	<fx:Script>
 		<![CDATA[
 			import components.AlertPopUp;
-			
+
 			import eventSystem.EventCentral;
 			import eventSystem.events.CustomEvent;
-			
+
 			import itemRenderers.CommentItemRenderer;
-			
+
 			import mx.events.FlexEvent;
-			
+
 			import spark.events.PopUpEvent;
 			import spark.managers.PersistenceManager;
-			
+
 			import utils.BookmarkRepository;
-			
+
 			import valueObjects.MenuItemVO;
-			
+
 			import views.CommentsView;
 			import views.MultipleShotsView;
-			
-			private var _bookmarkRepository:BookmarkRepository = new BookmarkRepository();
-			
-			//initialize app
-			
-			private function creationCompleteHandler(event:FlexEvent):void {
+
+			private var _bookmarkRepository:BookmarkRepository=new BookmarkRepository();
+
+			private function creationCompleteHandler(event:FlexEvent):void
+			{
 				_bookmarkRepository.getSavedBookmarks();
 				NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivateApp);
 				addMenuListeners();
-				addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);	
+				addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			}
-			
-			private function addMenuListeners():void{
-				EventCentral.getInstance().addEventListener(CustomEvent.ACTION_BAR_MENU_ICON_CLICKED_ABOUT_SELECTED,onAboutSelected);
-				EventCentral.getInstance().addEventListener(CustomEvent.ACTION_BAR_MENU_ICON_CLICKED_BOOKMARKS_SELECTED,onBookmarksSelected);
-				EventCentral.getInstance().addEventListener(CustomEvent.ACTIONBAR_MENU_ICON_CLICKED_DEBUTS_SELECTED,onDebutsSelected);
-				EventCentral.getInstance().addEventListener(CustomEvent.ACTIONBAR_MENU_ICON_CLICKED_POPULAR_SELECTED,onPopularSelected);
-				EventCentral.getInstance().addEventListener(CustomEvent.ACTIONBAR_MENU_ICON_CLIKED_EVERYBODY_SELECTED,onEverybodySelected);				
+
+			private function addMenuListeners():void
+			{
+				EventCentral.getInstance().addEventListener(CustomEvent.ACTION_BAR_MENU_ICON_CLICKED_ABOUT_SELECTED, onAboutSelected);
+				EventCentral.getInstance().addEventListener(CustomEvent.ACTION_BAR_MENU_ICON_CLICKED_BOOKMARKS_SELECTED, onBookmarksSelected);
+				EventCentral.getInstance().addEventListener(CustomEvent.ACTIONBAR_MENU_ICON_CLICKED_DEBUTS_SELECTED, onDebutsSelected);
+				EventCentral.getInstance().addEventListener(CustomEvent.ACTIONBAR_MENU_ICON_CLICKED_POPULAR_SELECTED, onPopularSelected);
+				EventCentral.getInstance().addEventListener(CustomEvent.ACTIONBAR_MENU_ICON_CLIKED_EVERYBODY_SELECTED, onEverybodySelected);
 			}
-			
-			private function onAddedToStage(event:Event):void{
+
+			private function onAddedToStage(event:Event):void
+			{
 				removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage)
-				//stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
 				callFirstView();
 			}
-			
-			private function callFirstView():void{
-				var vo:MenuItemVO = new MenuItemVO();
+
+			private function callFirstView():void
+			{
+				var vo:MenuItemVO=new MenuItemVO();
 				vo.setTitle(MenuItemVO.POPULAR);
 				vo.setViewType(MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW);
-				viewNavigator.pushView(views.MultipleShotsView,vo);
+				viewNavigator.pushView(views.MultipleShotsView, vo);
 			}
-			
-			//menu selection handlers
-			
-			private function onAboutSelected(event:CustomEvent):void{
+
+			private function onAboutSelected(event:CustomEvent):void
+			{
 				viewNavigator.pushView(views.AboutView);
 			}
-			
-			private function onBookmarksSelected(event:CustomEvent):void{
+
+			private function onBookmarksSelected(event:CustomEvent):void
+			{
 				trace("on bookmarksselected");
-				var vo:MenuItemVO = new MenuItemVO();
+				var vo:MenuItemVO=new MenuItemVO();
 				vo.setTitle(MenuItemVO.BOOKMARKED_SHOTS);
 				vo.setViewType(MenuItemVO.BOOKMARKED_SHOTS);
-				viewNavigator.pushView(views.MultipleShotsView,vo);
+				viewNavigator.pushView(views.MultipleShotsView, vo);
 			}
-			
-			private function onDebutsSelected(event:CustomEvent):void{
-				var vo:MenuItemVO = new MenuItemVO();
+
+			private function onDebutsSelected(event:CustomEvent):void
+			{
+				var vo:MenuItemVO=new MenuItemVO();
 				vo.setTitle(MenuItemVO.DEBUTS);
 				vo.setViewType(MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW);
-				viewNavigator.pushView(views.MultipleShotsView,vo);	
+				viewNavigator.pushView(views.MultipleShotsView, vo);
 			}
-			
-			private function onPopularSelected(event:CustomEvent):void{
-				var vo:MenuItemVO = new MenuItemVO();
+
+			private function onPopularSelected(event:CustomEvent):void
+			{
+				var vo:MenuItemVO=new MenuItemVO();
 				vo.setTitle(MenuItemVO.POPULAR);
 				vo.setViewType(MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW);
-				viewNavigator.pushView(views.MultipleShotsView,vo);	
+				viewNavigator.pushView(views.MultipleShotsView, vo);
 			}
-			
-			private function onEverybodySelected(event:CustomEvent):void{
-				var vo:MenuItemVO = new MenuItemVO();
+
+			private function onEverybodySelected(event:CustomEvent):void
+			{
+				var vo:MenuItemVO=new MenuItemVO();
 				vo.setTitle(MenuItemVO.EVERYONE);
 				vo.setViewType(MenuItemVO.MULTIPLE_PLAYERS_SHOTS_VIEW);
-				viewNavigator.pushView(views.MultipleShotsView,vo);
+				viewNavigator.pushView(views.MultipleShotsView, vo);
 			}
-			
-			//on exiting app
-			private function onDeactivateApp(event:Event):void {
+
+			private function onDeactivateApp(event:Event):void
+			{
 				_bookmarkRepository.saveBookmarks();
-				//stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
-				/* if want app to close down on exit, use following code
-					trace("nibbble client deactivated");
-					NativeApplication.nativeApplication.exit();
-				*/
+
 			}
 		]]>
 	</fx:Script>
-	
-	<s:ViewNavigator id="viewNavigator" width="100%" height="100%"/>
-	
+
+	<s:ViewNavigator id="viewNavigator"
+					 width="100%"
+					 height="100%"/>
+
 </s:TabbedViewNavigatorApplication>

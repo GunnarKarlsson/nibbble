@@ -31,30 +31,7 @@
         [HostComponent("spark.components.SkinnablePopUpContainer")]
     ]]>
     </fx:Metadata> 
-    
-    <fx:Script fb:purpose="styling">
-        <![CDATA[         
-    		/*
-            override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
-            {
-                // Push backgroundColor and backgroundAlpha directly.
-                // Handle undefined backgroundColor by hiding the background object.
-                if (isNaN(getStyle("backgroundColor")))
-                {
-                    background.visible = false;
-                }
-                else
-                {
-                    background.visible = true;
-                    bgFill.color = getStyle("backgroundColor");
-                    bgFill.alpha = getStyle("backgroundAlpha");
-                }
-                
-                super.updateDisplayList(unscaledWidth, unscaledHeight);
-            }
-			*/
-        ]]>        
-    </fx:Script>    
+      
     <s:states>
         <s:State name="normal"/>
         <s:State name="disabled"/>

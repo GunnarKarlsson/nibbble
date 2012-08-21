@@ -1,18 +1,36 @@
+/******************************************************************************
+ * Copyright 2011, 2012 Gunnar Karlsson.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
 package valueObjects
 {
-	
+
 	import com.squidzoo.ImageUtils;
-	
+
 	import flash.display.Bitmap;
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.net.URLRequest;
-	
+
+	import mx.core.FlexGlobals;
+
 	import spark.primitives.BitmapImage;
 
 	[Bindable]
 	public class ShotVO
-	{		
+	{
 		public var id:int;
 		public var title:String;
 		public var shortUrl:String;
@@ -28,53 +46,46 @@ package valueObjects
 		public var createdAt:String;
 		public var player:PlayerVO;
 		public var bookmarked:Boolean;
-		
+
 		public var teaserImage:Bitmap;
 		public var image:Bitmap;
-		
-		public function ShotVO(imageTeaserUrl:String,imageUrl:String)
+
+		public var _targetWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth * 0.9;
+
+		public function ShotVO(imageTeaserUrl:String, imageUrl:String)
 		{
-			_imageTeaserUrl = imageTeaserUrl;
-			_imageUrl = imageUrl;
-			
+			_imageTeaserUrl=imageTeaserUrl;
+			_imageUrl=imageUrl;
+
 			loadTeaserImage();
 			loadImage();
 		}
-		
-		private function loadTeaserImage():void{
-			var imageRequest:URLRequest = new URLRequest(_imageTeaserUrl);
-			var loader:Loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE,assignTeaserImage);
+
+		private function loadTeaserImage():void
+		{
+			var imageRequest:URLRequest=new URLRequest(_imageTeaserUrl);
+			var loader:Loader=new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, assignTeaserImage);
 			loader.load(imageRequest);
 		}
-	
-		private function assignTeaserImage(event:Event):void{
-			teaserImage = event.currentTarget.content as Bitmap;
+
+		private function assignTeaserImage(event:Event):void
+		{
+			teaserImage=event.currentTarget.content as Bitmap;
 		}
-		
-		private function loadImage():void{
-			var imageRequest:URLRequest = new URLRequest(_imageUrl);
-			var loader:Loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE,assignImage);
+
+		private function loadImage():void
+		{
+			var imageRequest:URLRequest=new URLRequest(_imageUrl);
+			var loader:Loader=new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, assignImage);
 			loader.load(imageRequest);
 		}
-		
-		private function assignImage(event:Event):void{
-			var img:Bitmap = event.currentTarget.content as Bitmap;
-			image = changeImageSize(img);
-		}
-		
-		private function changeImageSize(img:Bitmap):Bitmap{
-			var image:Bitmap = img;
-			if(image.width > image.height){
-				image = ImageUtils.scaleToTargetWidth(image,400);
-			}else{
-				image = ImageUtils.scaleToTargetHeight(image,300);
-			}
-			
-			image = ImageUtils.addBorder(image,10,0xffffff);
-			
-			return image;
+
+		private function assignImage(event:Event):void
+		{
+			var img:Bitmap=event.currentTarget.content as Bitmap;
+			image=img;
 		}
 	}
 }

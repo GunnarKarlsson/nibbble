@@ -1,74 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				xmlns:mx="library://ns.adobe.com/flex/mx"
 				xmlns:styles="styles.*"
 				creationComplete="init()"
-				autoDrawBackground="false" contentBackgroundAlpha="0" 
-				>
+				autoDrawBackground="false"
+				contentBackgroundAlpha="0">
 	<fx:Declarations>
 		<styles:GraphicElementsLibrary id="graphicLib"/>
 	</fx:Declarations>
-	
 
-	
-<fx:Script>
-	<![CDATA[
-		import mx.core.FlexGlobals;
-		
-		import spark.components.BusyIndicator;
-		
-		import valueObjects.PlayerVO;
-		
-		import views.MultipleShotsView;
-		import views.SingleShotView;
-		
-		private var _data:Object;
-		
-		private function onCreationComplete():void{
-			
-		}
-		
-		override public function set data(value:Object):void{
-			_data = value;
-			teaserImage.source = value.teaserImage;
-			avatarImage.source = value.player.avatarImage;
-			titleLabel.text = truncate(value.title);
-			usernameLabel.text = "by "+ truncate(value.player.username);
-			bi.visible = false;
-		}
-		
-		private function truncate(str:String):String{
-			if(str.length > 30){
-				str = str.slice(0,30);
-				str += "...";
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+
+			import spark.components.BusyIndicator;
+
+			import valueObjects.PlayerVO;
+
+			import views.MultipleShotsView;
+			import views.SingleShotView;
+
+			private var _data:Object;
+
+			override public function set data(value:Object):void
+			{
+				_data=value;
+				teaserImage.source=value.teaserImage;
+				avatarImage.source=value.player.avatarImage;
+				titleLabel.text=truncate(value.title);
+				usernameLabel.text="by " + truncate(value.player.username);
+				bi.visible=false;
 			}
-			return str;
-		}
-		
-		private function init():void{
-			bi.visible = true;
-		}
-		
-		private function onTeaserImageClick():void{
-			trace("teaserimage click");
-			FlexGlobals.topLevelApplication.viewNavigator.pushView(SingleShotView, _data);
-		}
-		
-		private function onAvatarImageClick():void{
-			_data.player.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
-			FlexGlobals.topLevelApplication.viewNavigator.pushView(MultipleShotsView, _data.player);
-		}
-		
-	]]>
-</fx:Script>
-	
+
+			private function truncate(str:String):String
+			{
+				if (str.length > 30)
+				{
+					str=str.slice(0, 30);
+					str+="...";
+				}
+				return str;
+			}
+
+			private function init():void
+			{
+				bi.visible=true;
+			}
+
+			private function onTeaserImageClick():void
+			{
+				trace("teaserimage click");
+				FlexGlobals.topLevelApplication.viewNavigator.pushView(SingleShotView, _data);
+			}
+
+			private function onAvatarImageClick():void
+			{
+				_data.player.setViewType(PlayerVO.SINGLE_PLAYERS_SHOTS_VIEW);
+				FlexGlobals.topLevelApplication.viewNavigator.pushView(MultipleShotsView, _data.player);
+			}
+		]]>
+	</fx:Script>
+
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
-	
-	<s:Path x="1" y="1" filters="{[graphicLib.getDropShadowFilter()]}"
-						data = "	M 0 0
+
+	<s:Path x="1"
+			y="1"
+			filters="{[graphicLib.getDropShadowFilter()]}"
+			data="	M 0 0
 									L 207 0
 									L 207 180
 									L 30 180
@@ -83,20 +103,43 @@
 				<s:GradientEntry color="0xeeeeee"/>
 			</s:LinearGradient>
 		</s:fill>
-				
-	</s:Path> 
-	
-	<s:Image id="teaserImage" x="5" y="5" maxHeight="150" click="onTeaserImageClick()"/>
-	
-	<s:SkinnableContainer x="2" y="204" width="{avatarImage.width+10}" height="{avatarImage.height+10}" skinClass="skins.WhiteGradientBoxWithDropShadowSkin">
-		<s:Image id="avatarImage" click="onAvatarImageClick()" left="5" top="5"/>
-	</s:SkinnableContainer>
-		
-	
 
-	<s:Label id="titleLabel" x="8" y="163" fontSize="12" color="#222222"/>
-	<s:Label id="usernameLabel" x="100" y="215" fontSize="12" color="#eeeeee" />
-	
-	<s:BusyIndicator id="bi" x="100" y="100" scaleX="0.5" scaleY="0.5"/>
-	
+	</s:Path>
+
+	<s:Image id="teaserImage"
+			 x="5"
+			 y="5"
+			 maxHeight="150"
+			 click="onTeaserImageClick()"/>
+
+	<s:SkinnableContainer x="2"
+						  y="204"
+						  width="{avatarImage.width+10}"
+						  height="{avatarImage.height+10}"
+						  skinClass="skins.WhiteGradientBoxWithDropShadowSkin">
+		<s:Image id="avatarImage"
+				 click="onAvatarImageClick()"
+				 left="5"
+				 top="5"/>
+	</s:SkinnableContainer>
+
+
+
+	<s:Label id="titleLabel"
+			 x="8"
+			 y="163"
+			 fontSize="12"
+			 color="#222222"/>
+	<s:Label id="usernameLabel"
+			 x="100"
+			 y="215"
+			 fontSize="12"
+			 color="#eeeeee"/>
+
+	<s:BusyIndicator id="bi"
+					 x="100"
+					 y="100"
+					 scaleX="0.5"
+					 scaleY="0.5"/>
+
 </s:ItemRenderer>

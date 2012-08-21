@@ -1,168 +1,217 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" 
+
+<!--
+*******************************************************************************
+* Copyright 2011, 2012 Gunnar Karlsson.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
 		viewActivate="viewActivateHandler()"
-		tabBarVisible="false" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:styles="styles.*">
+		tabBarVisible="false"
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:styles="styles.*">
 	<fx:Declarations>
-		<s:HTTPService id="service" url="{_url}" method="GET" resultFormat="text"
-					   result="serviceResultHandler(event)" request="{_serviceRequestParams}"/>
+		<s:HTTPService id="service"
+					   url="{_url}"
+					   method="GET"
+					   resultFormat="text"
+					   result="serviceResultHandler(event)"
+					   request="{_serviceRequestParams}"/>
 		<styles:GraphicElementsLibrary id="graphicsLib"/>
-		<s:DropShadowFilter id="dropShadowText" distance="2" angle="90" blurX="1" blurY="1" alpha="1" color="0xffffff" />
-		
+		<s:DropShadowFilter id="dropShadowText"
+							distance="2"
+							angle="90"
+							blurX="1"
+							blurY="1"
+							alpha="1"
+							color="0xffffff"/>
+
 	</fx:Declarations>
-	
+
 	<s:navigationContent>
-		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')" click="popup.show()"/>	
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/nibbbleLogoGrey.png')"
+				  click="popup.show()"/>
 	</s:navigationContent>
-	
+
 	<s:actionContent>
-		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="popup.show()"/>
-	</s:actionContent>	
-	
+		<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')"
+				  click="popup.show()"/>
+	</s:actionContent>
+
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.serialization.json.JSON;
-			
+
 			import components.AlertPopUp;
 			import components.MenuPopUp;
-			
+
 			import helpers.CommentVOArrrayCollectionPopulator;
-			
+
 			import itemRenderers.CommentItemRenderer;
-			
+
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
 			import mx.rpc.events.ResultEvent;
-			
+
 			import spark.components.SkinnablePopUpContainer;
 			import spark.events.PopUpEvent;
-			
+
 			import valueObjects.CommentVO;
-			
+
 			private var popup:MenuPopUp;
-			
+
 			import components.AlertPopUp;
-			
+
 			import spark.events.PopUpEvent;
-			
+
 			[Bindable]
 			private var _serviceRequestParams:Object;
-			
+
 			[Bindable]
 			private var _url:String;
-			
+
 			[Bindable]
-			private var _commentVOs:ArrayCollection = new ArrayCollection();
-			
+			private var _commentVOs:ArrayCollection=new ArrayCollection();
+
 			private var _numCommentsPerPage:int;
-			private var _pageNumber:int = 1;
+			private var _pageNumber:int=1;
 			private var _numPages:int;
-			private var _perPage:int = 15;
-			
-			public var forCompiler:CommentsView;//Required
-			public var forCompilerAlso:CommentItemRenderer;//Required;
-			
+			private var _perPage:int=15;
+
+			public var forCompiler:CommentsView; //Required
+			public var forCompilerAlso:CommentItemRenderer; //Required;
+
 			[Bindable]
-			private var _pageChangeGroupWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;
-			
+			private var _pageChangeGroupWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth;
+
 			[Bindable]
-			private var _screenWidth:int = FlexGlobals.topLevelApplication.stage.stageWidth;
-				
+			private var _screenWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth;
+
 			[Bindable]
-			private var _stageWidth:int =FlexGlobals.topLevelApplication.stage.stageWidth;	
-			
-			private function onClickMenuIcon(event:MouseEvent=null):void{
-				var alert:AlertPopUp = new AlertPopUp();
+			private var _stageWidth:int=FlexGlobals.topLevelApplication.stage.stageWidth;
+
+			private function onClickMenuIcon(event:MouseEvent=null):void
+			{
+				var alert:AlertPopUp=new AlertPopUp();
 				alert.addEventListener(PopUpEvent.CLOSE, onCloseAlert);
 				alert.show("message");
 			}
-			
-			private function onCloseAlert(event:Event):void{
-				trace("this closes Alert");
-			}	
-				
-			private function viewActivateHandler():void{
-				popup = new MenuPopUp();
-				trace("cv data.id: "+data.id);
-				callService();
-				//addEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
-				addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);	
+
+			private function onCloseAlert(event:Event):void
+			{
+				trace("onCloseAlert()");
 			}
-			
-			private function onKeyDown(event:KeyboardEvent):void{
-				if(event.keyCode == Keyboard.MENU){
+
+			private function viewActivateHandler():void
+			{
+				popup=new MenuPopUp();
+				callService();
+				addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			}
+
+			private function onKeyDown(event:KeyboardEvent):void
+			{
+				if (event.keyCode == Keyboard.MENU)
+				{
 					event.preventDefault();
 					trace("\nMenu Pressed\n");
 					popup.show();
 				}
 			}
-			
-			//private function onAddedToStage(event:Event):void{
-				//removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
-			//}
-			
-			private function callService():void{
-				_serviceRequestParams = new Object();
-				_serviceRequestParams.per_page = _perPage;
-				_serviceRequestParams.page = _pageNumber;
-				_url = "http://api.dribbble.com/shots/"+data.id+"/comments";
+
+			private function callService():void
+			{
+				_serviceRequestParams=new Object();
+				_serviceRequestParams.per_page=_perPage;
+				_serviceRequestParams.page=_pageNumber;
+				_url="http://api.dribbble.com/shots/" + data.id + "/comments";
 				service.send();
 			}
-			private function serviceResultHandler(event:ResultEvent):void{
+
+			private function serviceResultHandler(event:ResultEvent):void
+			{
 				_commentVOs.removeAll();
-				var obj:Object = JSON.decode(service.lastResult.toString());
-				
-				_numPages = obj.pages;
-				
-				_commentVOs = CommentVOArrrayCollectionPopulator.execute(obj);
-				
-				for(var i:int = 0; i < _commentVOs.length;i++){
-					_commentVOs[i].shotImage = data.teaserImage;
-					_commentVOs[i].title = data.title;
-					_commentVOs[i].commentedPlayer = data.player.username;
-					_commentVOs[i].filter = dropShadowText;
+				var obj:Object=JSON.decode(service.lastResult.toString());
+
+				_numPages=obj.pages;
+
+				_commentVOs=CommentVOArrrayCollectionPopulator.execute(obj);
+
+				for (var i:int=0; i < _commentVOs.length; i++)
+				{
+					_commentVOs[i].shotImage=data.teaserImage;
+					_commentVOs[i].title=data.title;
+					_commentVOs[i].commentedPlayer=data.player.username;
+					_commentVOs[i].filter=dropShadowText;
 				}
-				
+
 				setNewerAndOlderButtons();
 			}
-			
-			private function setNewerAndOlderButtons():void{
-				
-				if(_pageNumber>1){
-					newerButton.enabled = true;
-				}else{
-					newerButton.enabled = false;	
+
+			private function setNewerAndOlderButtons():void
+			{
+
+				if (_pageNumber > 1)
+				{
+					newerButton.enabled=true;
 				}
-				
-				if(((_pageNumber * _perPage)) >= data.commentsCount){
-					olderButton.enabled = false;
-				}else{
-					olderButton.enabled = true;
+				else
+				{
+					newerButton.enabled=false;
 				}
-		
+
+				if (((_pageNumber * _perPage)) >= data.commentsCount)
+				{
+					olderButton.enabled=false;
+				}
+				else
+				{
+					olderButton.enabled=true;
+				}
+
 			}
-			
-			private function onClickOlder():void{
-				if(_pageNumber<_numPages)_pageNumber++;
-				trace("_pageNumber:" +_pageNumber);
-				_serviceRequestParams.page = _pageNumber;
-				_url = "http://api.dribbble.com/shots/"+data.id+"/comments";
+
+			private function onClickOlder():void
+			{
+				if (_pageNumber < _numPages)
+					_pageNumber++;
+				_serviceRequestParams.page=_pageNumber;
+				_url="http://api.dribbble.com/shots/" + data.id + "/comments";
 				service.send();
 			}
-			
-			private function getOlderPage():void{
-				if(data.commentsCount > 0){
-					if(_commentVOs.length > 0 ){
+
+			private function getOlderPage():void
+			{
+				if (data.commentsCount > 0)
+				{
+					if (_commentVOs.length > 0)
+					{
 						_pageNumber++;
 						callService();
 					}
 				}
 			}
-			
-			private function getNewerPage():void{
-				if(data.commentsCount > 0){
-					if(_pageNumber>1){
+
+			private function getNewerPage():void
+			{
+				if (data.commentsCount > 0)
+				{
+					if (_pageNumber > 1)
+					{
 						_pageNumber--;
 					}
 					callService();
@@ -172,36 +221,69 @@
 	</fx:Script>
 
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" paddingLeft="10" paddingRight="10"/>
+		<s:VerticalLayout horizontalAlign="center"
+						  verticalAlign="middle"
+						  paddingLeft="10"
+						  paddingRight="10"/>
 	</s:layout>
-	
-	<s:SkinnableContainer  width="{_screenWidth}" skinClass="skins.WhiteGradientBoxSkin">
-		
-	<s:HGroup paddingBottom="10" left="10" right="10" paddingTop="10" width="90%">
-	
-		<s:Image source ="{data.teaserImage}" scaleX="0.5" scaleY="0.5"/>
-		
-		<s:TextArea text="{data.commentsCount} comments on {data.title} by {data.player.username}" 
-					width="90%"
-					paddingTop="15" paddingLeft="5" paddingBottom="10" paddingRight="20"
-					selectable="false" editable="false" contentBackgroundAlpha="0"
-					lineBreak="toFit"
-					borderVisible="false"
-					color="#444444"
-					fontSize="16"/>
-	</s:HGroup>
-		
+
+	<s:SkinnableContainer width="{_screenWidth}"
+						  skinClass="skins.WhiteGradientBoxSkin">
+
+		<s:HGroup paddingBottom="10"
+				  left="10"
+				  right="10"
+				  paddingTop="10"
+				  width="90%">
+
+			<s:Image source="{data.teaserImage}"
+					 scaleX="0.5"
+					 scaleY="0.5"/>
+
+			<s:TextArea text="{data.commentsCount} comments on {data.title} by {data.player.username}"
+						width="90%"
+						paddingTop="15"
+						paddingLeft="5"
+						paddingBottom="10"
+						paddingRight="20"
+						selectable="false"
+						editable="false"
+						contentBackgroundAlpha="0"
+						lineBreak="toFit"
+						borderVisible="false"
+						color="#444444"
+						fontSize="16"/>
+		</s:HGroup>
+
 	</s:SkinnableContainer>
-	
-	<s:List id="listDisplay" contentBackgroundAlpha="0"
-			itemRenderer="itemRenderers.CommentItemRenderer" width="100%" height="100%" dataProvider="{_commentVOs}">
+
+	<s:List id="listDisplay"
+			contentBackgroundAlpha="0"
+			itemRenderer="itemRenderers.CommentItemRenderer"
+			width="100%"
+			height="100%"
+			dataProvider="{_commentVOs}">
 	</s:List>
-	
-	<s:SkinnableContainer width="{_stageWidth}" skinClass="skins.FooterSkin" horizontalCenter="0">
-		<s:HGroup gap="0" bottom="0" width="100%" horizontalAlign="center">			
-			<s:Button id="newerButton" label="newer" width="100%" click="getNewerPage()" skinClass="components.upButton"/>
-			<s:Button id="olderButton" width="100%" height="49" label="older" click="getOlderPage()" skinClass="components.downButtonSkin"/>
+
+	<s:SkinnableContainer width="{_stageWidth}"
+						  skinClass="skins.FooterSkin"
+						  horizontalCenter="0">
+		<s:HGroup gap="0"
+				  bottom="0"
+				  width="100%"
+				  horizontalAlign="center">
+			<s:Button id="newerButton"
+					  label="newer"
+					  width="100%"
+					  click="getNewerPage()"
+					  skinClass="components.upButton"/>
+			<s:Button id="olderButton"
+					  width="100%"
+					  height="49"
+					  label="older"
+					  click="getOlderPage()"
+					  skinClass="components.downButtonSkin"/>
 		</s:HGroup>
 	</s:SkinnableContainer>
-	
+
 </s:View>
