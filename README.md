@@ -2,6 +2,8 @@
 
 This project provides an Android client for the dribble.com website. 
 
+![Screen shots](https://github.com/GunnarKarlsson/nibbble/raw/master/screenShots.png)
+
 ## Features
 * View shots.
 * Browse popular, debuts and everyone's shots.
