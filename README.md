@@ -14,13 +14,17 @@ This project provides an Android client for the dribble.com website.
 
 ## Background
 
-nibbble was launched on Google Play (then Android Market) in September 2011. It was open-sourced in August 2012. The project was written in ActionScript 3.0 and mxml. It requires the Adobe air flash plugin to run on Android devices. The nibbble source was built with Air 2.6. During its time on Goole Play, the app was downloaded 2,600 times with 1,200 active installs at the peak. The apps rating at time of unpublishing was 3.9/5. In early 2013 I unpublished nibbble. There were breaking changes in the Adobe Air 3.0 API and layout-breaking image formats from dribbble.com. I didn't have time to actively support the app with updates.
+nibbble was launched on Google Play (then Android Market) in September 2011. It was open-sourced in August 2012. 
+
+The project was written in ActionScript 3.0 and mxml. It requires the Adobe air flash plugin to run on Android devices. The nibbble source was built with Air 2.6. 
+
+During its time on Goole Play, the app was downloaded 2,600 times with 1,200 active installs at the peak. In early 2013 I unpublished nibbble. There were breaking changes in the Adobe Air 3.0 API and layout-breaking image formats from dribbble.com. I didn't have time to actively support the app with updates. The Google Play rating at time of unpublishing was 3.9/5. 
 
 ## License
 
-    Copyright 2011, 2012 Gunnar Karlsson
+    Copyright © 2011 - 2013 Gunnar Karlsson
 
-    Source code license:
+    Source code:
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -36,4 +40,4 @@ nibbble was launched on Google Play (then Android Market) in September 2011. It 
     
     Artwork:
     
-    .png files are Copyright Gunnar Karlsson and are not covered by the Apache License.
+    Artwork assets (png files): Copyright © Gunnar Karlsson 2011 - 2013 and are not covered by the Apache License.
