@@ -31,9 +31,6 @@
 	
 	
 	<s:actionContent>
-		<!--original is refresh48x48.png-->
-		<!--<s:Button icon="@Embed(source='assets/icons/dribbbleIcons/refresh-grey-999999.png')" 
-				  click="refreshList()"/>-->
 		<s:Button id="menuButton" icon="@Embed(source='assets/icons/dribbbleIcons/menuLightGrey.png')" click="_popup.show()"/>
 	</s:actionContent>
 	

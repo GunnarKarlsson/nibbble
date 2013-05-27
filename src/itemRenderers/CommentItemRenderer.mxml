@@ -25,8 +25,8 @@
 	<fx:Script>
 		<![CDATA[
 			import views.CommentsView;
-			public var forCompiler:CommentItemRenderer; //Required
-			public var forCompilerAlso:CommentsView; //Required
+			public var forCompiler:CommentItemRenderer;
+			public var forCompilerAlso:CommentsView;
 		]]>
 	</fx:Script>
 

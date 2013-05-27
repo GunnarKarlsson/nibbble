@@ -63,7 +63,6 @@
 				if (event.keyCode == Keyboard.MENU)
 				{
 					event.preventDefault();
-					trace("\nMenu Pressed\n");
 					popup.show();
 				}
 			}

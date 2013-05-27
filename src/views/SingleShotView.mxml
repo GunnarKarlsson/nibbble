@@ -119,7 +119,6 @@
 
 			private function onCloseAlert(event:Event):void
 			{
-				trace("this closes Alert");
 			}
 
 			private function viewActivateHandler():void

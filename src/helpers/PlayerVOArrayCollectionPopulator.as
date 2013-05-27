@@ -56,13 +56,12 @@ package helpers
 					vo.reboundsCount=obj.players[i].rebounds_count as int;
 					vo.createdAt=obj.players[i].created_at as String;
 
-					//trace(shotVO.player.username);
 					playerVOs.addItem(vo);
-				} //end loop
+				}
 			}
 			return playerVOs;
 
-		} //end function execute
+		}
 
-	} //class
-} //pkg
+	}
+}

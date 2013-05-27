@@ -168,8 +168,7 @@
 			}
 
 			private function onCloseAlert(event:Event):void
-			{
-				trace("onCloseAlert()");
+			{			
 			}
 
 			private function listChangeHandler(event:IndexChangeEvent):void
@@ -206,7 +205,6 @@
 
 			protected function service_faultHandler(event:FaultEvent):void
 			{
-				trace("FaultEvent");
 			}
 		]]>
 	</fx:Script>

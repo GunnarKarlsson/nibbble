@@ -79,7 +79,6 @@
 		]]>
 	</fx:Script>
 
-	<!-- Also uses the MyPopupSkin.mxml class -->
 	<s:VGroup left="4"
 			  right="4"
 			  top="4"

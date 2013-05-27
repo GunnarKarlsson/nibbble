@@ -69,7 +69,6 @@
 
 			private function onTeaserImageClick():void
 			{
-				trace("teaserimage click");
 				FlexGlobals.topLevelApplication.viewNavigator.pushView(SingleShotView, _data);
 			}
 

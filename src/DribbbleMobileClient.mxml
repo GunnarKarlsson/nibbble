@@ -91,7 +91,6 @@
 
 			private function onBookmarksSelected(event:CustomEvent):void
 			{
-				trace("on bookmarksselected");
 				var vo:MenuItemVO=new MenuItemVO();
 				vo.setTitle(MenuItemVO.BOOKMARKED_SHOTS);
 				vo.setViewType(MenuItemVO.BOOKMARKED_SHOTS);
